@@ -1,0 +1,47 @@
+/* ---- fonts ---- */
+@font-face {
+    font-family: 'Glacial Indifference Bold';
+    src: url(' fonts/GlacialIndifference-Bold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Glacial Indifference';
+    src: url(' fonts/GlacialIndifference-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* ---- general styling ---- */
+.welcome-container {
+    z-index: -1;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    text-align: center;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    right: 0;
+    width: 100vw;
+    left: 0px;
+    padding-left: 30px;
+    background-color: #0d3d1d;
+    color: white;
+    font-family: Glacial Indifference;
+}
+
+.welcome-container p {
+    font-size: 22px;
+}
+
+body {
+    font-size: 18px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ---- dashboard ---- */
+.dashboard-container {
+    padding: 30px;
+}

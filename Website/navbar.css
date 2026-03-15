@@ -1,0 +1,82 @@
+/* ---- fonts ---- */
+@font-face {
+    font-family: 'Glacial Indifference';
+    src: url('fonts/GlacialIndifference-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Glacial Indifference Bold';
+    src: url('fonts/GlacialIndifference-Bold.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+/* ---- navbar ---- */
+@media screen and (max-width: 992px) {
+    .navbar-middle,
+    .navbarAccount {
+        font-size: 15px !important;
+    }
+}
+
+.header {
+    display: flex;
+    position: sticky;
+    z-index: 1000;
+}
+.navbar {
+    margin-top: -20px;
+    color: #1e1919;
+    background-color: #08330d;
+    height: 95px;
+    align-content: center;
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+.navbar-items {
+    text-decoration: none;
+    font-family: Glacial Indifference;
+    list-style: none;
+    padding: 0 4.5%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    background: none;
+}
+.navbar svg {
+    position: absolute;
+    top: 35px;
+    left: 40px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    margin-right: 24px;
+    color: white;
+    font-size: 29px;
+    position: relative;
+    top: -4px;
+}
+
+.navbar-logo a {
+    margin: 0;
+    display: block;
+    padding: 0px 25px;
+    text-decoration: none;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    color: #FFFFFF;
+    font-family: 'Glacial Indifference Bold';
+    font-size: 36px !important;
+    background-color: transparent;
+    transition: font-size 0.05s ease-in-out;
+}
+.navbar-logo a:hover {
+    font-size: 37px !important;
+}
