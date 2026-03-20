@@ -41,17 +41,12 @@
     text-decoration: none;
     font-family: Glacial Indifference;
     list-style: none;
-    padding: 0 4.5%;
+    padding: 0 3%;
     display: flex;
     justify-content: space-between;
     align-items: center;
     height: 100%;
     background: none;
-}
-.navbar svg {
-    position: absolute;
-    top: 35px;
-    left: 40px;
 }
 
 nav ul li a {
@@ -60,15 +55,15 @@ nav ul li a {
     color: white;
     font-size: 29px;
     position: relative;
-    top: -4px;
+    top: -9px;
 }
 
 .navbar-logo a {
     margin: 0;
     display: block;
-    padding: 0px 25px;
     text-decoration: none;
     font-weight: bold;
+    line-height: 100%;
     white-space: nowrap;
     overflow: hidden;
     color: #FFFFFF;
@@ -79,4 +74,36 @@ nav ul li a {
 }
 .navbar-logo a:hover {
     font-size: 37px !important;
+}
+
+.menu-button {
+    font-size: 29px;
+    transition: font-size 0.1s ease-in-out;
+}
+.menu-button a:hover {
+    font-size: 30px !important;
+    transition: font-size 0.1s ease-in-out;
+}
+
+
+/* ---- side bar menu ---- */
+.sidebar-container {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 250px;
+    height: 100%;
+    background-color: #08330d;
+    padding-top: 60px;
+    z-index: 1001;
+    background-color: darkgreen;
+}
+
+.sidebar-open {
+    transform: translateX(0);
+    transition: transform 0.3s ease-in-out;
+}
+
+.sidebar-closed {
+
 }

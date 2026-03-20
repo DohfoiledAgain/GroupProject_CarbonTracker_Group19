@@ -25,22 +25,14 @@
     <header>
         <nav class="navbar">
 
-            <!-- svg leaf icon -->
-            <svg viewBox="0 0 25000 25000">
-	            <symbol id="leaf" viewBox="-0.1 -0.1 3.2 3.2">
-		            <path stroke-width="0.2" d="m0,0 h1 a2,2 0,0,1 2,2 v1 h-1 a2,2 0,0,1 -2,-2z"/>
-	            </symbol>
-	            <use xlink:href="#leaf" x="100" y="100" width="620" height="620" stroke="darkgreen" fill="white"/>
-            </svg>
-
             <!-- navbar items -->
             <ul class="navbar-items">
 
                 <li class="navbar-logo">
-                    <a href="index.php">CO2 Tracker</a>
+                    <a href="index.php">🍃 CO2 Tracker</a>
                 </li>
 
-                <li>
+                <li class="menu-button">
                     <a href="index.php">Menu &nbsp☰</a>
                 </li>
 
