@@ -1,0 +1,46 @@
+/* ---- terms and conditions ---- */
+#tc-overlay {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: #000a;
+    color: #fff;
+}
+#tc-overlay #content {
+    height: 50%;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: var(--darker-theme-colour);
+    padding: 10px;
+    border-radius: 10px;
+}
+#tc-overlay #content #scroll-box {
+    padding: 20px;
+    max-width: 90%;
+    background-color: var(--main-theme-colour);
+}
+#tc-overlay #content #checkbox {
+    padding: 20px;
+    max-width: 50%;
+    background-color: var(--main-theme-colour);
+    flex-direction: row;
+}
+#tc-overlay #content #tc-accept-btn {
+    background-color: var(--lighter-theme-colour);
+    border-color: var(--darker-theme-colour);
+    color: #fff;
+}
+#tc-overlay #content #tc-accept-btn:disabled {
+    background-color: var(--darker-theme-colour);
+    border-color: var(--lighter-theme-colour);
+    color: #000;
+}

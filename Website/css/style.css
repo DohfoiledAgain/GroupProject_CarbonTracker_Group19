@@ -1,16 +1,23 @@
 /* ---- fonts ---- */
 @font-face {
     font-family: 'Glacial Indifference Bold';
-    src: url(' fonts/GlacialIndifference-Bold.woff') format('woff');
+    src: url('fonts/GlacialIndifference-Bold.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Glacial Indifference';
-    src: url(' fonts/GlacialIndifference-Regular.woff') format('woff');
+    src: url('fonts/GlacialIndifference-Regular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
+}
+
+/* ---- variables ---- */
+:root {
+    --lighter-theme-colour: #1b5e31;
+    --main-theme-colour: #0d3d1d;
+    --darker-theme-colour: #08330d;
 }
 
 /* ---- general styling ---- */
@@ -27,7 +34,7 @@
     width: 100vw;
     left: 0px;
     padding-left: 30px;
-    background-color: #0d3d1d;
+    background-color: var(--main-theme-colour);
     color: white;
     font-family: Glacial Indifference;
 }

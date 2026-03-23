@@ -1,20 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Carbon Footprint Tracker</title>
-    <link rel="stylesheet" href="style.css" />
-</head>
+  <?php
+  include("components/head.php");
+  ?>
 <body>
     <!-- navbar -->
     <?php
-    require_once("functions.php");
-    include("navbar.php");
+    include("components/navbar.php");
     ?>
 
     <!-- body -->
-    <br><br><br>
     <div class="welcome-container">
         <h1 style="font-size: 50px; margin-bottom: -15px;">Dashboard</h1>
         <p style="font-size: 30px;">Your CO2 stats</p>
@@ -27,6 +22,7 @@
         <p style="font-size: 22px;">and suggestions to reduce carbon</p>
     </div>
     
-    <script src="functions.js"></script>
+    <?php checkTC();?>
+    <script src="js/functions.js"></script>
 </body>
 </html>
