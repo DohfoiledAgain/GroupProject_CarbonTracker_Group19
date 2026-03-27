@@ -1,0 +1,122 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{0885C954-7B5C-6783-1D7C-C5133384E2CC}|C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website|c:\\xampp\\htdocs\\groupproj-carbontracker\\website\\css\\navbar.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{0885C954-7B5C-6783-1D7C-C5133384E2CC}|C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website|solutionrelative:website\\css\\navbar.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0885C954-7B5C-6783-1D7C-C5133384E2CC}|C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website|c:\\xampp\\htdocs\\groupproj-carbontracker\\website\\css\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}",
+      "RelativeMoniker": "D:0:0:{0885C954-7B5C-6783-1D7C-C5133384E2CC}|C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website|solutionrelative:website\\css\\style.css||{A5401142-F49D-43DB-90B1-F57BA349E55C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0885C954-7B5C-6783-1D7C-C5133384E2CC}|C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website|c:\\xampp\\htdocs\\groupproj-carbontracker\\website\\components\\head.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{0885C954-7B5C-6783-1D7C-C5133384E2CC}|C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website|solutionrelative:website\\components\\head.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0885C954-7B5C-6783-1D7C-C5133384E2CC}|C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website|c:\\xampp\\htdocs\\groupproj-carbontracker\\website\\js\\functions.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{0885C954-7B5C-6783-1D7C-C5133384E2CC}|C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website|solutionrelative:website\\js\\functions.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0885C954-7B5C-6783-1D7C-C5133384E2CC}|C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website|c:\\xampp\\htdocs\\groupproj-carbontracker\\website\\components\\navbar.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{0885C954-7B5C-6783-1D7C-C5133384E2CC}|C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website|solutionrelative:website\\components\\navbar.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0885C954-7B5C-6783-1D7C-C5133384E2CC}|C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website|c:\\xampp\\htdocs\\groupproj-carbontracker\\website\\index.php||{3B902123-F8A7-4915-9F01-361F908088D0}",
+      "RelativeMoniker": "D:0:0:{0885C954-7B5C-6783-1D7C-C5133384E2CC}|C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website|solutionrelative:website\\index.php||{3B902123-F8A7-4915-9F01-361F908088D0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 5,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "head.php",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website\\components\\head.php",
+              "RelativeDocumentMoniker": "Website\\components\\head.php",
+              "ToolTip": "C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website\\components\\head.php",
+              "RelativeToolTip": "Website\\components\\head.php",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-03-25T20:45:34.558Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "functions.js",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website\\js\\functions.js",
+              "RelativeDocumentMoniker": "Website\\js\\functions.js",
+              "ToolTip": "C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website\\js\\functions.js",
+              "RelativeToolTip": "Website\\js\\functions.js",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAA6AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2026-03-25T20:31:02.223Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "style.css",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website\\css\\style.css",
+              "RelativeDocumentMoniker": "Website\\css\\style.css",
+              "ToolTip": "C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website\\css\\style.css",
+              "RelativeToolTip": "Website\\css\\style.css",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-03-25T20:28:24.132Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "index.php",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website\\index.php",
+              "RelativeDocumentMoniker": "Website\\index.php",
+              "ToolTip": "C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website\\index.php",
+              "RelativeToolTip": "Website\\index.php",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-03-25T18:36:53.227Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "navbar.php",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website\\components\\navbar.php",
+              "RelativeDocumentMoniker": "Website\\components\\navbar.php",
+              "ToolTip": "C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website\\components\\navbar.php",
+              "RelativeToolTip": "Website\\components\\navbar.php",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADIAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-03-25T18:37:25.662Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "navbar.css",
+              "DocumentMoniker": "C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website\\css\\navbar.css",
+              "RelativeDocumentMoniker": "Website\\css\\navbar.css",
+              "ToolTip": "C:\\xampp\\htdocs\\GroupProj-CarbonTracker\\Website\\css\\navbar.css",
+              "RelativeToolTip": "Website\\css\\navbar.css",
+              "ViewState": "AgIAAGgAAAAAAAAAAAAAwH4AAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003000|",
+              "WhenOpened": "2026-03-25T18:37:06.635Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -31,9 +31,8 @@
     position: absolute;
     left: 0;
     right: 0;
-    width: 100vw;
-    left: 0px;
-    padding-left: 30px;
+    width: 100%;
+    padding: 20px 0;
     background-color: var(--main-theme-colour);
     color: white;
     font-family: Glacial Indifference;
@@ -51,4 +50,42 @@ body {
 /* ---- dashboard ---- */
 .dashboard-container {
     padding: 30px;
+}
+
+/* ---- about us ---- */
+.T&C-button {
+    text-decoration: none;
+    font-family: Glacial Indifference;
+    color: white;
+    font-size: 25px;
+    padding: 0px;
+    background-color: transparent;
+    border: none;
+}
+
+/* ---- activity log ---- */
+.activity-log-container {
+    width: 40vw;
+    margin: auto;
+    margin-top: 270px;
+}
+
+.activities-table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+.activities-table td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+.activities-table tr:nth-child(even) {
+    background-color: #dddddd;
+}
+
+/* ---- account ---- */
+.account-container {
+    width: 40vw;
+    margin: auto;
 }

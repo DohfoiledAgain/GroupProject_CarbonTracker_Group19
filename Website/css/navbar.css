@@ -28,14 +28,15 @@
     z-index: 1000;
 }
 .navbar {
-    margin-top: -20px;
     color: #1e1919;
     background-color: #08330d;
     height: 95px;
     align-content: center;
-    position: absolute;
+    position: fixed;
     left: 0;
     right: 0;
+    top: 0;
+    bottom: 0;
 }
 .navbar-items {
     text-decoration: none;
@@ -45,8 +46,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 100%;
     background: none;
+    height: 100%;
+    margin: 0px;
 }
 
 nav ul li a {
@@ -55,7 +57,6 @@ nav ul li a {
     color: white;
     font-size: 29px;
     position: relative;
-    top: -9px;
 }
 
 .navbar-logo a {
@@ -67,7 +68,6 @@ nav ul li a {
     white-space: nowrap;
     overflow: hidden;
     color: #FFFFFF;
-    font-family: 'Glacial Indifference Bold';
     font-size: 36px !important;
     background-color: transparent;
     transition: font-size 0.05s ease-in-out;
@@ -79,31 +79,99 @@ nav ul li a {
 .menu-button {
     font-size: 29px;
     transition: font-size 0.1s ease-in-out;
+    color: white;
 }
-.menu-button a:hover {
+.menu-button:hover {
     font-size: 30px !important;
     transition: font-size 0.1s ease-in-out;
+    cursor: pointer;
 }
 
 
 /* ---- side bar menu ---- */
+.close-button {
+    font-size: 45px;
+    transition: font-size 0.1s ease-in-out;
+    color: white;
+    padding-left: 10px;
+    position: absolute;
+    top: 20px;
+}
+.close-button:hover {
+    font-size: 43px;
+    cursor: pointer;
+    transition: font-size 0.1s ease-in-out;
+}
+
 .sidebar-container {
     position: fixed;
     top: 0;
     right: 0;
-    width: 250px;
+    width: 0px;
     height: 100%;
     background-color: #08330d;
     padding-top: 60px;
     z-index: 1001;
-    background-color: darkgreen;
+    overflow-x: hidden;
+    transition: 0.5s;
 }
 
-.sidebar-open {
-    transform: translateX(0);
-    transition: transform 0.3s ease-in-out;
+.sidebar-items {
+    list-style-type: none;
+    padding-left: 0;
+
+}
+.sidebar-items a:not(.sidebar-logo) {
+    text-decoration: none;
+    color: white;
+    font-size: 25px;
+    display: block;
+    white-space: nowrap
+}
+.sidebar-items a:hover:not(.sidebar-logo) {
+    font-size: 26px;
+    transition: font-size 0.1s ease-in-out;
+}
+.sidebar-items li {
+    background-color: #08330d;
+    font-family: Glacial Indifference;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    left: 0;
+    padding-left: 30px;
 }
 
-.sidebar-closed {
+hr {
+    display: block;
+    height: 1px;
+    border: 0;
+    border-top: 4px solid #09360c;
+    margin: 0.5em 0;
+    padding: 0;
+}
 
+.sidebar-logo {
+    text-decoration: none;
+    transition: font-size 0.1s ease-in-out;
+}
+.sidebar-logo:hover {
+    font-size: 75px;
+    transition: font-size 0.1s ease-in-out;
+}
+
+.account-button {
+    text-decoration: none;
+    font-family: Glacial Indifference;
+    color: white;
+    font-size: 25px;
+    padding: 0px;
+    background-color: transparent;
+    border: none;
+}
+.account-button:hover {
+    font-size: 26px;
+    transition: font-size 0.1s ease-in-out;
+    cursor: pointer;
 }

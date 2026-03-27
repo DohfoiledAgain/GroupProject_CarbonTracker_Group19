@@ -17,4 +17,9 @@
     }
   }
 
+  function showTC() {
+    include("components/termsconditions.php");
+    exit();
+  }
+
 ?>
