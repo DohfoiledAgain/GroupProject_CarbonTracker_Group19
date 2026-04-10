@@ -1,14 +1,14 @@
 /* ---- fonts ---- */
 @font-face {
     font-family: 'Glacial Indifference';
-    src: url('fonts/GlacialIndifference-Regular.woff') format('woff');
+    src: url('../fonts/GlacialIndifference-Regular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Glacial Indifference Bold';
-    src: url('fonts/GlacialIndifference-Bold.woff') format('woff');
+    src: url('../fonts/GlacialIndifference-Bold.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }

@@ -16,10 +16,10 @@
     </div>
     
 
-    <div class="dashboard-container" style="padding-top: 230px;">
-        <h1 style="font-size: 30px;">this is where graphs go</h1>
+    <div class="dashboard-container" style="padding-top: 230px; font-size: 22px;">
+        <h1 style="font-size: 30px;">All activities (temporary)</h1>
 
-        <p style="font-size: 22px;">and suggestions to reduce carbon</p>
+        <?php DisplayAllActivities();?>
     </div>
     
     <?php checkTC();?>
