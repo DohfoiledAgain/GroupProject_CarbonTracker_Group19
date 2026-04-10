@@ -1,7 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
   <?php
-  include("components/head.php");
+    include("components/head.php");
+    if (isset($_POST['signin'])) {
+      header("Location: login.php?sign-in");
+      exit();
+    }
+    if (isset($_POST['signup'])) {
+      header("Location: login.php?sign-up");
+      exit();
+    }
+    if (isset($_POST['logout'])) {
+      session_destroy();
+      header("Location: login.php?sign-in");
+      exit();
+    }
   ?>
 <body>
     <!-- navbar -->
@@ -11,36 +24,16 @@
 
     <!-- body -->
     <div class="welcome-container">
-        <h1 style="font-size: 50px; margin-bottom: -15px;">Your Account</h1>
-        <p style="font-size: 30px;">Sign up, log in, and view your account details.</p>
+        <h1 style="font-size: 50px; margin-bottom: -15px;">Hello<?php echo isset($_SESSION['user_id']) ? " " . $user['Username'] : ""; ?></h1>
+        <p style="font-size: 30px;"><?php echo $user ? ' ' : 'Sign up or sign in to view you account'; ?></p>
     </div>
 
-    <div class="account-container">
-    <!-- check session - if not logged in, display log in container -- if logged in, display account details and log out button -->
-    <!-- if not logged in, also display a sign up button which then displays the sign up container -->
-        <div class="login-container" style="padding-top: 230px;">
-            <h1 style="font-size: 30px; font-family: 'Glacial Indifference'">Login</h1>
-
-            <?php
-            
-            ?>
-        </div>
-    
-        <div class="signup-container">
-            <h1 style="font-size: 30px; font-family: 'Glacial Indifference'">Signup</h1>
-
-            <?php
-
-            ?>
-        </div>
-
-        <div class="account-details-container">
-            <h1 style="font-size: 30px; font-family: 'Glacial Indifference'">Your account</h1>
-
-            <?php
-
-            ?>
-        </div>
+    <div class="account-container" style="padding-top: 230px;">
+      <form method="POST">
+        <button type="submit" name="signin" style="<?php echo $user ? 'display:none' : 'display:block'; ?>">Sign In</button>
+        <button type="submit" name="signup" style="<?php echo $user ? 'display:none' : 'display:block'; ?>">Sign Up</button>
+        <button type="submit" name="logout" style="<?php echo !$user ? 'display:none' : 'display:block'; ?>">Logout</button>
+      </form>
     </div>
     
     <script src="functions.js"></script>

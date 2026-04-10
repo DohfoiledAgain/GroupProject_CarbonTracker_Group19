@@ -9,5 +9,6 @@
     <script src="js/functions.js"></script>
     <?php
       require_once("components/functions.php");
+      $user = getUser();
     ?>
 </head>

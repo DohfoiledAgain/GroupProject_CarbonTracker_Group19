@@ -1,14 +1,14 @@
 /* ---- fonts ---- */
 @font-face {
     font-family: 'Glacial Indifference Bold';
-    src: url('fonts/GlacialIndifference-Bold.woff') format('woff');
+    src: url('../fonts/GlacialIndifference-Bold.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
 
 @font-face {
     font-family: 'Glacial Indifference';
-    src: url('fonts/GlacialIndifference-Regular.woff') format('woff');
+    src: url('../fonts/GlacialIndifference-Regular.woff') format('woff');
     font-weight: normal;
     font-style: normal;
 }
@@ -18,6 +18,7 @@
     --lighter-theme-colour: #1b5e31;
     --main-theme-colour: #0d3d1d;
     --darker-theme-colour: #08330d;
+    --error-colour: #ff1313;
 }
 
 /* ---- general styling ---- */
@@ -88,4 +89,8 @@ body {
 .account-container {
     width: 40vw;
     margin: auto;
+}
+
+.error-text {
+  color: var(--error-colour);
 }

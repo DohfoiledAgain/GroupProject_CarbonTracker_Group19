@@ -23,6 +23,16 @@
     return $db;
   }
 
+ function getUser() {
+    if (!isset($_SESSION['user_id'])) {
+        return null;
+    }
+    $db = dbConnect();
+    $stmt = $db->prepare("SELECT * FROM User WHERE User_ID = :id");
+    $stmt->bindValue(':id', $_SESSION['user_id']);
+    $result = $stmt->execute();
+    return $result->fetchArray(SQLITE3_ASSOC);
+}
 
   /* ------------------ Dashboard functions */
 
