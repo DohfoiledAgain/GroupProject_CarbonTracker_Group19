@@ -39,7 +39,7 @@
     if (isset($_POST['signup_username'])) {
       // signup form was submitted
       $username = $_POST['signup_username'];
-      $email = $_POST['signup_email'];
+      $email = strtolower($_POST['signup_email']);
       $password = $_POST['signup_password'];
       $members = $_POST['signup_household'];
       $db = dbConnect();
@@ -71,7 +71,7 @@
 
     if (isset($_POST['signin_username_email'])) {
         // signin form was submitted
-      $usernameemail = $_POST['signin_username_email'];
+      $usernameemail = strtolower($_POST['signin_username_email']);
       $password = $_POST['signin_password'];
       $db = dbConnect();
 
