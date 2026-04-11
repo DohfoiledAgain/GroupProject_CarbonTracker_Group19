@@ -38,7 +38,7 @@
         <hr/>
         <li><a href="about-us.php">About Us</a></li>
         <hr/>
-        <li><form method="post"><button type="submit" name="login" class="account-button">Account</button></form></li>
+        <li><a href="<?php echo isset($_SESSION['user_id']) ? 'account.php' : 'login.php?sign-in'; ?>">Account</a></li>
     </ul>
 </div>
 

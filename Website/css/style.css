@@ -87,10 +87,69 @@ body {
 
 /* ---- account ---- */
 .account-container {
-    width: 40vw;
-    margin: auto;
+    float: left;
+    width: 100%;
+    background-color: white;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    margin-top: 330px;
+}
+
+.sign-up-in-left-container {
+    display: inline-block;
+    float: left;
+    width: 60%;
+    background-color: white;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+}
+
+.account-side-container {
+    display: inline-block;
+    float: right;
+    width: 25%;
+    background-color: var(--main-theme-colour);
+    padding-top: -50px;
+    padding-right: 9%;
+    padding-left: 9%;
+    text-align: center;
+    align-items: center;
+    align-content: center;
 }
 
 .error-text {
-  color: var(--error-colour);
+    color: var(--error-colour);
+}
+
+.sign-in-button {
+    border-radius: 10px;
+    padding: 5px;
+    width: 311.6px;
+    height: 43px;
+    color: white;
+    font-size: 16px;
+    background-color: var(--lighter-theme-colour);
+    border: none;
+    cursor: pointer;
+}
+.sign-up-button {
+    border-radius: 10px;
+    width: 270px;
+    height: 42px;
+    color: black;
+    font-size: 16px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.account-input-form {
+    width: 300px;
+    height: 30px;
+    border-radius: 10px;
+    border: 1px solid #cccccc;
+    padding: 5px;
+    font-size: 16px;
 }
