@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/navbar.css" />
     <link rel="stylesheet" href="css/termsconditions.css" />
+    <link rel="stylesheet" href="css/loginoverlay.css" />
     <script src="js/functions.js"></script>
     <?php
       require_once("components/functions.php");

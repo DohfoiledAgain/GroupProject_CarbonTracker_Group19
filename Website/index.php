@@ -22,7 +22,9 @@
         <?php DisplayAllActivities();?>
     </div>
     
-    <?php checkTC();?>
+    <?php
+      include("components/loginprompt.php");
+    ?>
     <script src="js/functions.js"></script>
 </body>
 </html>

@@ -1,0 +1,25 @@
+/* ---- login overlay ---- */
+#login-overlay {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: #000a;
+    color: #fff;
+}
+#login-overlay .content {
+    height: 50%;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: var(--darker-theme-colour);
+    padding: 10px;
+    border-radius: 10px;
+}

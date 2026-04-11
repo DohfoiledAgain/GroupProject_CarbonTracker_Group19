@@ -46,8 +46,5 @@
         ?>
         </p>
     </div>
-
-    
-    <script src="functions.js"></script>
 </body>
 </html>

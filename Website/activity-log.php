@@ -40,6 +40,9 @@
             </tr>
         </table>
     </div>
+    <?php
+      include("components/loginprompt.php");
+    ?>
     
     <script src="functions.js"></script>
 </body>
