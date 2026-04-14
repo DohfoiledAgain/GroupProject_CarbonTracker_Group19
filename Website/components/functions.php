@@ -73,7 +73,7 @@
 
 ?>
 
-/* ------------------ Signup/in str_shuffle
+<!-- ------------------ Signup/in functions -->
 <?php
   // signup button clicked
   if (isset($_POST['signup-redir'])) {
