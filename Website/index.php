@@ -6,8 +6,8 @@
 
     <!-- body -->
     <div class="welcome-container">
-        <h1 style="font-size: 50px; margin-bottom: -15px;">Dashboard</h1>
-        <p style="font-size: 30px;">Your CO2 stats</p>
+        <h1>Dashboard</h1>
+        <p>Your CO2 stats</p>
     </div>
     
 

@@ -19,9 +19,8 @@
 
     <!-- body -->
     <div class="welcome-container">
-        <br>
-        <h1 style="font-size: 50px; margin-bottom: -15px;">My account</h1>
-        <p style="font-size: 30px;"><?php echo isset($_SESSION['user_id']) ? "Currently signed in as: " . $user['Username'] . "" : "Sign in to start tracking your emissions!"; ?></p>
+        <h1>My account</h1>
+        <p><?php echo isset($_SESSION['user_id']) ? "Currently signed in as: " . $user['Username'] . "" : "Sign in to start tracking your emissions!"; ?></p>
         <form method="POST">
             <button type="submit" name="logout" class="sign-up-button" style="<?php echo !$user ? 'display:none' : 'display:block'; ?>">Logout</button>
         </form>
@@ -29,25 +28,26 @@
     </div>
 
     <div class="account-container">
-        <p style="font-family: Glacial Indifference Bold; font-size: 35px;">Account Details</p>
+        <p style="font-family: Glacial Indifference Bold; font-size: 30px;">Account Details</p>
 
-        <p style="font-family: Glacial Indifference Bold; font-size: 26px;">First name:</p>
-        <p style="font-family: Glacial Indifference; font-size: 26px; margin-top: -15px;"><?php echo isset($_SESSION['user_id']) ? $user['Fname'] : ""; ?></p>
+        <p style="font-family: Glacial Indifference Bold; font-size: 22px;">First name:</p>
+        <p style="font-family: Glacial Indifference; font-size: 20px; margin-top: -15px;"><?php echo isset($_SESSION['user_id']) ? $user['Fname'] : ""; ?></p>
 
-        <p style="font-family: Glacial Indifference Bold; font-size: 26px;">Last name:</p>
-        <p style="font-family: Glacial Indifference; font-size: 26px; margin-top: -15px;"><?php echo isset($_SESSION['user_id']) ? $user['Lname'] : ""; ?></p>
+        <p style="font-family: Glacial Indifference Bold; font-size: 22px;">Last name:</p>
+        <p style="font-family: Glacial Indifference; font-size: 20px; margin-top: -15px;"><?php echo isset($_SESSION['user_id']) ? $user['Lname'] : ""; ?></p>
 
-        <p style="font-family: Glacial Indifference Bold; font-size: 26px;">Email:</p>
-        <p style="font-family: Glacial Indifference; font-size: 26px; margin-top: -15px;"><?php echo isset($_SESSION['user_id']) ? $user['Email'] : ""; ?></p>
+        <p style="font-family: Glacial Indifference Bold; font-size: 22px;">Email:</p>
+        <p style="font-family: Glacial Indifference; font-size: 20px; margin-top: -15px;"><?php echo isset($_SESSION['user_id']) ? $user['Email'] : ""; ?></p>
 
-        <p style="font-family: Glacial Indifference Bold; font-size: 26px;">People in household:</p>
-        <p style="font-family: Glacial Indifference; font-size: 26px; margin-top: -15px;">
+        <p style="font-family: Glacial Indifference Bold; font-size: 22px;">People in household:</p>
+        <p style="font-family: Glacial Indifference; font-size: 20px; margin-top: -15px;">
             <?php 
                 if (isset($_SESSION['user_id']) && isset($user['Num_Of_Household_Members'])) {
                     echo $user['Num_Of_Household_Members'] . ($user['Num_Of_Household_Members'] == 1 ? " person" : " people");
                 } 
             ?>
         </p>
+        <br><br>
 
     </div>
 </body>
