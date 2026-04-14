@@ -1,4 +1,4 @@
-<?php
+﻿<?php
   session_start();
 
   /* ------------------ Terms and Conditions functions */
@@ -73,8 +73,109 @@
 
 
   /* ------------------ Activity log functions */
+  function DisplayThisMonthsActivities($selected_month_datetime) {
+    $db = dbConnect();
+    $month = $selected_month_datetime->format('m-Y'); 
+       
+    $stmt = $db->prepare("
+        SELECT AL.*, U.Username, C.Name, C.Unit, C.Emission_Unit
+        FROM Activity_Log AL
+        INNER JOIN User U ON AL.User_ID = U.User_ID
+        INNER JOIN Emission_Category C ON AL.Category_ID = C.Category_ID
+        WHERE U.User_ID = :uid 
+        AND substr(Activity_Date, 4, 7) = :selected_month
+        ORDER BY AL.Activity_Date ASC
+    ");
+    $stmt->bindValue(':uid', $_SESSION['user_id']);
+    $stmt->bindValue(':selected_month', $month);
 
-  
+    $results = $stmt->execute();
+
+    if ($results)
+    {
+        $lastDate = "";
+
+        echo "
+        <table class='activities-table'>
+        <tr>
+            <th>Date</th>
+            <th>Category</th>
+            <th>Value</th>
+            <th>Notes</th>
+            <th>CO2 Emissions</th>
+        </tr>";
+        
+        while ($row = $results->fetchArray())
+        {
+            $currentDate = $row['Activity_Date'];
+            $dateTime = DateTime::createFromFormat('d-m-Y', $currentDate);
+            $dateFormatted = $dateTime->format('jS');
+
+            // if the date has changed since the last row, print the new header
+            if ($currentDate !== $lastDate) {
+                echo "
+                <tr></tr>
+                <tr></tr>
+                <tr></tr>
+                <tr class='date-break'>
+                    <td colspan='5'><p>" . $dateFormatted . "</p></td>
+                </tr>";
+                $lastDate = $currentDate;
+            }
+
+            echo "
+            <tr>
+                <td>{$row['Activity_Date']}</td>
+                <td>{$row['Name']}</td>
+                <td>{$row['Value']} {$row['Unit']}</td>
+                <td>{$row['Notes']}</td>
+                <td>{$row['Calculated_Emissions']} {$row['Emission_Unit']}</td>
+            </tr>";
+        }
+        echo "</table>";
+    }
+    else {
+        echo "No activities found or query failed.";
+    }
+  }
+
+
+  function DisplayMonthSelect() {
+      // get current month
+      $current_month_datetime = new DateTime('first day of this month 00:00:00');
+      $current_m_y = $current_month_datetime->format('m-y');
+      
+      // get selected month from URL, default to current date if unset
+      $selected_month_param = isset($_GET['date']) ? $_GET['date'] : $current_m_y; // in m-y format
+      $selected_month_datetime = DateTime::createFromFormat('m-y', $selected_month_param);
+      $selected_month_datetime->modify('first day of this month 00:00:00');
+      
+      // checks that selected month is not in the future
+      if ($selected_month_datetime > $current_month_datetime) {
+        header("Location: activity-log.php?date=" . $current_m_y);
+        exit;
+      }
+
+      $prev_month = (clone $selected_month_datetime)->modify('-1 month')->format('m-y');
+      $next_month = (clone $selected_month_datetime)->modify('+1 month')->format('m-y');
+
+      echo "<div class='activity-month-select-container'>";
+          echo "<a href='?date=$prev_month' class='month-select-arrow'>❮</a>";
+          echo "<p class='activity-month-header'>" . $selected_month_datetime->format('F Y') . "</p>";
+          if ($selected_month_datetime < $current_month_datetime) {
+            echo "<a href='?date=$next_month' class='month-select-arrow'>❯</a>";
+          }
+          else {
+            echo "<p> </p>";
+          }
+      echo "</div>";
+      
+      if ($selected_month_datetime < $current_month_datetime) {
+        echo "<div class='month-select-today'><a href='?date=" . $current_m_y . "'>Jump to now</a></div>";
+      }
+
+      DisplayThisMonthsActivities($selected_month_datetime);
+  }
 
 ?>
 
