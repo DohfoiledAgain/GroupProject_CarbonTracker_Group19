@@ -19,6 +19,18 @@
 
                     <form method="POST" action="login.php">
                         <p class="error-text"><?php echo $signuperror; ?></p>
+
+                        <div class="name-input">
+                            <div class="textbox">
+                                <input type="text" class="account-input-form fname" id="signup-fname-tb" name="signup-fname" autocomplete="off" placeholder="First Name">
+                            </div>  
+                            <br>
+                            <div class="textbox">
+                                <input type="text" class="account-input-form lname" id="signup-lname-tb" name="signup-lname" autocomplete="off" placeholder="Last Name">
+                            </div>  
+                        </div>
+
+                        <br>
                         <div class="textbox">
                             <input type="text" class="account-input-form" id="signup-username-tb" name="signup_username" autocomplete="off" placeholder="Username">
                         </div>
@@ -34,6 +46,8 @@
                         <div class="textbox">
                             <input type="number" max="15" min="1" class="account-input-form" id="signup-household-tb" name="signup_household" autocomplete="off" placeholder="Household size">
                         </div>  
+                        
+                        
                         <br><br>
                         <input type="submit" class= "sign-in-button" id="signup-submit", value="Sign Up">
                     </form>

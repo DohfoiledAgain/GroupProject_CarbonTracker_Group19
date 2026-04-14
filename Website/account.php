@@ -30,16 +30,25 @@
 
     <div class="account-container">
         <p style="font-family: Glacial Indifference Bold; font-size: 35px;">Account Details</p>
+
+        <p style="font-family: Glacial Indifference Bold; font-size: 26px;">First name:</p>
+        <p style="font-family: Glacial Indifference; font-size: 26px; margin-top: -15px;"><?php echo isset($_SESSION['user_id']) ? $user['Fname'] : ""; ?></p>
+
+        <p style="font-family: Glacial Indifference Bold; font-size: 26px;">Last name:</p>
+        <p style="font-family: Glacial Indifference; font-size: 26px; margin-top: -15px;"><?php echo isset($_SESSION['user_id']) ? $user['Lname'] : ""; ?></p>
+
         <p style="font-family: Glacial Indifference Bold; font-size: 26px;">Email:</p>
         <p style="font-family: Glacial Indifference; font-size: 26px; margin-top: -15px;"><?php echo isset($_SESSION['user_id']) ? $user['Email'] : ""; ?></p>
+
         <p style="font-family: Glacial Indifference Bold; font-size: 26px;">People in household:</p>
         <p style="font-family: Glacial Indifference; font-size: 26px; margin-top: -15px;">
-        <?php 
-            if (isset($_SESSION['user_id']) && isset($user['Num_Of_Household_Members'])) {
-                echo $user['Num_Of_Household_Members'] . ($user['Num_Of_Household_Members'] == 1 ? " person" : " people");
-            } 
-        ?>
+            <?php 
+                if (isset($_SESSION['user_id']) && isset($user['Num_Of_Household_Members'])) {
+                    echo $user['Num_Of_Household_Members'] . ($user['Num_Of_Household_Members'] == 1 ? " person" : " people");
+                } 
+            ?>
         </p>
+
     </div>
 </body>
 </html>
