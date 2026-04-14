@@ -20,6 +20,6 @@
       include("components/loginprompt.php");
     ?>
     
-    <script src="functions.js"></script>
+    <script src="js/functions.js"></script>
 </body>
 </html>
