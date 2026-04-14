@@ -13,3 +13,8 @@
       $user = getUser();
     ?>
 </head>
+<body>
+    <!-- navbar -->
+    <?php
+      include("components/navbar.php");
+    ?>

@@ -16,11 +16,6 @@
       exit();
     }
   ?>
-<body>
-    <!-- navbar -->
-    <?php
-    include("components/navbar.php");
-    ?>
 
     <!-- body -->
     <div class="welcome-container">

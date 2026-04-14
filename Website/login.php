@@ -4,11 +4,6 @@
   <?php
     include("components/head.php");
   ?>
-<body>
-    <!-- navbar -->
-    <?php
-    include("components/navbar.php");
-    ?>
 
 
     <!-- body -->
