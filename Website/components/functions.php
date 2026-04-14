@@ -71,6 +71,11 @@
     
   }
 
+
+  /* ------------------ Activity log functions */
+
+  
+
 ?>
 
 <!-- ------------------ Signup/in functions -->
