@@ -22,11 +22,11 @@
 
                         <div class="name-input">
                             <div class="textbox">
-                                <input type="text" class="account-input-form fname" id="signup-fname-tb" name="signup-fname" autocomplete="off" placeholder="First Name">
+                                <input type="text" class="account-input-form fname" id="signup-fname-tb" name="signup_fname" autocomplete="off" placeholder="First Name">
                             </div>  
                             <br>
                             <div class="textbox">
-                                <input type="text" class="account-input-form lname" id="signup-lname-tb" name="signup-lname" autocomplete="off" placeholder="Last Name">
+                                <input type="text" class="account-input-form lname" id="signup-lname-tb" name="signup_lname" autocomplete="off" placeholder="Last Name">
                             </div>  
                         </div>
 
@@ -105,6 +105,9 @@
         
     </div>
 
+    <?php
+        checkTC();
+    ?>
   <script src="js/login.js"></script>
 
 </body>

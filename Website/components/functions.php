@@ -104,38 +104,53 @@
             $signuperror = "Password must be longer than 8 characters";
         } else if ($_GET['signup-error'] == "invalid_email") {
             $signuperror = "Email is invalid";
+        } else if ($_GET['signup-error'] == "invalid_fname") {
+            $signuperror = "First name must be longer than 1 characters";
+        } else if ($_GET['signup-error'] == "invalid_lname") {
+            $signuperror = "Second name must be longer than 1 characters";
         }
     }
     
     if (isset($_POST['signup_username'])) {
       // signup form was submitted
+      $fname = $_POST['signup_fname'];
+      $lname = $_POST['signup_lname'];
       $username = $_POST['signup_username'];
       $email = strtolower($_POST['signup_email']);
       $password = $_POST['signup_password'];
       $members = $_POST['signup_household'];
       $db = dbConnect();
+      if(strlen($fname) > 1){
+        if(strlen($lname) > 2){
+          if(strlen($username) > 2){
+            if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+              if(strlen($password) > 8){
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                $stmt = $db->prepare("INSERT INTO User (Fname, Lname, Username, Password_Hash, Email, Num_Of_Household_Members) VALUES (:fname, :lname, :username, :password, :email, :members)");              
+                $stmt->bindValue(':fname', $fname);
+                $stmt->bindValue(':lname', $lname);
+                $stmt->bindValue(':username', $username);
+                $stmt->bindValue(':password', $hashedPassword);
+                $stmt->bindValue(':email', $email);
+                $stmt->bindValue(':members', $members);
+                $stmt->execute();
 
-      if(strlen($username) > 2){
-        if(filter_var($email, FILTER_VALIDATE_EMAIL)){
-          if(strlen($password) > 8){
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $db->prepare("INSERT INTO User (Username, Password_Hash, Email, Num_Of_Household_Members) VALUES (:username, :password, :email, :members)");
-            $stmt->bindValue(':username', $username);
-            $stmt->bindValue(':password', $hashedPassword);
-            $stmt->bindValue(':email', $email);
-            $stmt->bindValue(':members', $members);
-            $stmt->execute();
-
-            $_SESSION['user_id'] = $db->lastInsertRowID();
-            header("Location: index.php");
+                $_SESSION['user_id'] = $db->lastInsertRowID();
+                header("Location: index.php");
+              } else {
+                header("Location: login.php?sign-up&signup-error=invalid_password");
+              }
+            } else {
+              header("Location: login.php?sign-up&signup-error=invalid_email");
+            }
           } else {
-            header("Location: login.php?sign-up&signup-error=invalid_password");
+            header("Location: login.php?sign-up&signup-error=invalid_username");
           }
         } else {
-          header("Location: login.php?sign-up&signup-error=invalid_email");
+          header("Location: login.php?sign-up&signup-error=invalid_lname");
         }
       } else {
-        header("Location: login.php?sign-up&signup-error=invalid_username");
+        header("Location: login.php?sign-up&signup-error=invalid_fname");
       }
       exit();
     }
