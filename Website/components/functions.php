@@ -1,6 +1,10 @@
 ﻿<?php
 session_start();
 
+/* ------------------------------------ FORM CHECKS ------------------*/
+
+/* -------- Sign up / Sign in Form Checks */
+
 if (isset($_POST['signup-redir'])) {
   header("Location: login.php?sign-up");
   exit();
@@ -88,6 +92,45 @@ if (isset($_POST['signin_username_email'])) {
   exit();
 }
 
+$signuperror = "";
+$signinerror = "";
+
+if (array_key_exists('sign-in', $_GET)) {
+  $show = 'sign-in';
+} else {
+  $show = 'sign-up';
+}
+
+if (isset($_GET['signin-error'])) {
+  if ($_GET['signin-error'] == "invalid_credentials") {
+    $signinerror = "Invalid username/email or password.";
+  }
+}
+
+if (isset($_GET['signup-error'])) {
+  if ($_GET['signup-error'] == "invalid_username") {
+    $signuperror = "Username must be longer than 2 characters";
+  } else if ($_GET['signup-error'] == "invalid_password") {
+    $signuperror = "Password must be longer than 8 characters";
+  } else if ($_GET['signup-error'] == "invalid_email") {
+    $signuperror = "Email is invalid";
+  } else if ($_GET['signup-error'] == "invalid_fname") {
+    $signuperror = "Must include first name";
+  } else if ($_GET['signup-error'] == "invalid_lname") {
+    $signuperror = "Must include second name";
+  } else if ($_GET['signup-error'] == "username_taken") {
+    $signuperror = "Username already in use";
+  } else if ($_GET['signup-error'] == "email_taken") {
+    $signuperror = "Email already in use";
+  } else if ($_GET['signup-error'] == "duplicate_entry") {
+    $signuperror = "Shouldn't happen, fallback for non username/email reasons";
+  } else if ($_GET['signup-error'] == "db_error") {
+    $signuperror = "UH OH PANIC! UH OH PANIC! UH OH PANIC! UH OH PANIC! UH OH PANIC! UH OH PANIC!";
+  }
+}
+
+/* ------------ Activity Log Form Checks */
+
 if (isset($_POST['action'])) {
   $db = dbConnect();
   $action = $_POST['action'];
@@ -105,10 +148,32 @@ if (isset($_POST['action'])) {
   if ($action === 'edit_activity') {
     $inputdate = $_POST['activity_date'];
     $formatteddate = date("d-m-Y", strtotime($inputdate));
-    $stmt = $db->prepare("UPDATE Activity_Log SET Activity_Date = :date, Value = :value, Notes = :notes WHERE Log_ID = :id AND User_ID = :user_id");
+    $log_id = $_POST['log_id'];
+    $value = $_POST['value'];
+
+    $stmt = $db->prepare("SELECT Category_ID FROM Activity_Log WHERE Log_ID = :id AND User_ID = :user_id");
+    $stmt->bindValue(':id', $log_id, SQLITE3_INTEGER);
+    $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+    $result = $stmt->execute();
+    $row = $result->fetchArray(SQLITE3_NUM);
+    $cat = $row[0];
+
+    $stmt = $db->prepare("SELECT Emission_Factor FROM Emission_Category WHERE Category_ID = :cat");
+    $stmt->bindValue(':cat', $cat, SQLITE3_TEXT);
+    $result = $stmt->execute();
+    $row = $result->fetchArray(SQLITE3_ASSOC);
+    $emiss_factor = $row['Emission_Factor'];
+    if ($emiss_factor) {
+        $calc_emiss = $value * $emiss_factor;
+    } else {
+    die("Error: Activity Log entry not found for this user.");
+}
+
+    $stmt = $db->prepare("UPDATE Activity_Log SET Activity_Date = :date, Value = :value, Notes = :notes, Calculated_Emissions = :calc_emiss WHERE Log_ID = :id AND User_ID = :user_id");
     $stmt->bindValue(':date', $formatteddate, SQLITE3_TEXT);
-    $stmt->bindValue(':value', $_POST['value'], SQLITE3_FLOAT);
+    $stmt->bindValue(':value', $value, SQLITE3_FLOAT);
     $stmt->bindValue(':notes', $_POST['notes'], SQLITE3_TEXT);
+    $stmt->bindValue(':calc_emiss', $calc_emiss, SQLITE3_FLOAT);
     $stmt->bindValue(':id', $_POST['log_id'], SQLITE3_INTEGER);
     $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
     $stmt->execute();
@@ -119,17 +184,33 @@ if (isset($_POST['action'])) {
   if ($action === 'add_activity') {
     $inputdate = $_POST['activity_date'];
     $formatteddate = date("d-m-Y", strtotime($inputdate));
-    $stmt = $db->prepare("INSERT INTO Activity_Log (User_ID, Category_ID, Activity_Date, Value, Notes, Calculated_Emissions) VALUES (:user_id, :cat, :date, :value, :notes, 0)");
+
+    $value = $_POST['value'];
+    $stmt = $db->prepare("SELECT Emission_Factor FROM Emission_Category WHERE Category_ID = :cat");
+    $stmt->bindValue(':cat', $_POST['category_id'], SQLITE3_TEXT);
+    $result = $stmt->execute();
+    $row = $result->fetchArray(SQLITE3_ASSOC);
+    $emiss_factor = $row['Emission_Factor'];
+    if ($emiss_factor) {
+        $calc_emiss = $value * $emiss_factor;
+    }
+
+    $stmt = $db->prepare("INSERT INTO Activity_Log (User_ID, Category_ID, Activity_Date, Value, Notes, Calculated_Emissions) VALUES (:user_id, :cat, :date, :value, :notes, :calc_emiss)");
     $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
     $stmt->bindValue(':cat', $_POST['category_id'], SQLITE3_TEXT);
     $stmt->bindValue(':date', $formatteddate, SQLITE3_TEXT);
-    $stmt->bindValue(':value', $_POST['value'], SQLITE3_FLOAT);
+    $stmt->bindValue(':value', $value, SQLITE3_FLOAT);
     $stmt->bindValue(':notes', $_POST['notes'], SQLITE3_TEXT);
+    $stmt->bindValue(':calc_emiss', $calc_emiss, SQLITE3_FLOAT);
     $stmt->execute();
     header("Location: " . $redirect);
     exit();
   }
 }
+
+
+
+/* ------------------------------------ FUNCTIONS ------------------*/
 
 /* ------------------ Terms and Conditions functions */
 
@@ -171,45 +252,62 @@ function getUser()
 
 /* ------------------ Dashboard functions */
 
-function DisplayAllActivities()
+function Temp()
 {
   $db = dbConnect();
   $results = $db->query(
-    "SELECT AL.*, U.Username, C.Name, C.Unit
-        FROM Activity_Log AL
-        INNER JOIN User U ON AL.User_ID = U.User_ID
-        INNER JOIN Emission_Category C ON AL.Category_ID = C.Category_ID
-        ORDER BY AL.Activity_Date ASC
-        "
+    "SELECT *
+    FROM Activity_Log
+    Activity_Date ASC"
   );
-  // WHERE U.username = '" . $_SESSION['username'] . "'
-  // ^ this should display the correct activities for the logged in user when we have a working login system ..i think  -Nick
-
-  if ($results) {
-    $lastDate = "";
-
-    while ($row = $results->fetchArray()) {
-      $currentDate = $row['Activity_Date'];
-
-      if ($currentDate !== $lastDate) {
-        echo "<h3>" . $currentDate . "</h3>";
-        $lastDate = $currentDate;
-      }
-
-      echo "<p>" . $row['Username'] . " - " . $row['Name'] . " - " . $row['Value'] . " " . $row['Unit'] . "</p>";
-    }
-  } else {
-    echo "No activities found or query failed.";
-  }
 }
 
 
 /* ------------------ Activity log functions */
+
+function DisplayActivityLog()
+{
+  // determine current month and selected month
+  $current_month_datetime = new DateTime('first day of this month 00:00:00');
+  $current_m_y = $current_month_datetime->format('m-y');
+
+  $selected_month_param = isset($_GET['date']) ? $_GET['date'] : $current_m_y;
+  $selected_month_datetime = DateTime::createFromFormat('m-y', $selected_month_param);
+  $selected_month_datetime->modify('first day of this month 00:00:00');
+
+  if ($selected_month_datetime > $current_month_datetime) {
+    header("Location: activity-log.php?date=" . $current_m_y);
+    exit;
+  }
+
+  $prev_month = (clone $selected_month_datetime)->modify('-1 month')->format('m-y');
+  $next_month = (clone $selected_month_datetime)->modify('+1 month')->format('m-y');
+
+  // display month title and navigation arrows
+  echo "<div class='activity-month-select-container'>";
+  echo "<a href='?date=$prev_month' class='month-select-arrow'>❮</a>";
+  echo "<p class='activity-month-header'>" . $selected_month_datetime->format('F Y') . "</p>";
+  if ($selected_month_datetime < $current_month_datetime) {
+    echo "<a href='?date=$next_month' class='month-select-arrow'>❯</a>";
+  } else {
+    echo "<p> </p>";
+  }
+  echo "</div>";
+
+  if ($selected_month_datetime < $current_month_datetime) {
+    echo "<div class='month-select-today'><a href='?date=" . $current_m_y . "'>Jump to now</a></div>";
+  }
+
+  // display log for this month
+  DisplayThisMonthsActivities($selected_month_datetime);
+}
+
 function DisplayThisMonthsActivities($selected_month_datetime)
 {
   $db = dbConnect();
   $month = $selected_month_datetime->format('m-Y');
 
+  // retrieve database values
   $stmt = $db->prepare("
           SELECT AL.*, U.Username, C.Name, C.Unit, C.Emission_Unit
           FROM Activity_Log AL
@@ -235,7 +333,8 @@ function DisplayThisMonthsActivities($selected_month_datetime)
               <th>CO2 Emissions</th>
               <th>Actions</th>
           </tr>";
-
+    
+    // display table contents
     while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
       $currentDate = $row['Activity_Date'];
       $dateTime = DateTime::createFromFormat('d-m-Y', $currentDate);
@@ -256,6 +355,7 @@ function DisplayThisMonthsActivities($selected_month_datetime)
       $escapedNotes = htmlspecialchars($row['Notes'], ENT_QUOTES);
       $escapedValue = htmlspecialchars($row['Value'], ENT_QUOTES);
       $escapedDate  = htmlspecialchars($row['Activity_Date'], ENT_QUOTES);
+      $dateForEditInput = $dateTime->format('Y-m-d');
 
       echo "
               <tr id='row-{$logId}'>
@@ -265,15 +365,15 @@ function DisplayThisMonthsActivities($selected_month_datetime)
                   <td>{$row['Notes']}</td>
                   <td>{$row['Calculated_Emissions']} {$row['Emission_Unit']}</td>
                   <td class='action-buttons'>
-                      <button onclick='openEditModal({$logId}, \"{$escapedDate}\", \"{$escapedValue}\", \"{$escapedNotes}\")'>Edit</button>
+                      <button onclick='openEditModal({$logId}, \"{$dateForEditInput}\", \"{$escapedValue}\", \"{$escapedNotes}\")'>Edit</button>
                       <button onclick='confirmDelete({$logId})'>Delete</button>
                   </td>
               </tr>";
     }
     echo "</table>";
 
+    // edit activity modal
     echo "<button onclick='openAddModal()' class='add-activity-btn'>+ Add Activity</button>";
-
     echo "
           <div id='editModal' style='display:none;' class='modal'>
               <div class='modal-content'>
@@ -282,7 +382,7 @@ function DisplayThisMonthsActivities($selected_month_datetime)
                       <input type='hidden' name='action' value='edit_activity'>
                       <input type='hidden' name='log_id' id='edit_log_id'>
                       <label>Date: <input type='date' name='activity_date' id='edit_date'></label>
-                      <label>Value: <input type='number' step='0.1' value='0' name='value' id='edit_value'></label>
+                      <label>Value: <input type='number' step='0.05' value='0' name='value' id='edit_value'></label>
                       <label>Notes: <input type='text' name='notes' id='edit_notes'></label>
                       <button type='submit'>Save</button>
                       <button type='button' onclick='closeModal(\"editModal\")'>Cancel</button>
@@ -290,6 +390,7 @@ function DisplayThisMonthsActivities($selected_month_datetime)
               </div>
           </div>";
 
+    // add activity modal
     $db2 = dbConnect();
     $cats = $db2->query("SELECT Category_ID, Name, Unit FROM Emission_Category ORDER BY Name ASC");
     $categoryOptions = "";
@@ -309,7 +410,7 @@ function DisplayThisMonthsActivities($selected_month_datetime)
                               {$categoryOptions}
                           </select>
                       </label>
-                      <label>Value: <input type='number' step='0.1' value='0' name='value' id='edit_value'></label>
+                      <label>Value: <input type='number' step='0.05' value='0' name='value' id='edit_value'></label>
                       <label>Notes: <input type='text' name='notes'></label>
                       <button type='submit'>Add</button>
                       <button type='button' onclick='closeModal(\"addModal\")'>Cancel</button>
@@ -317,6 +418,7 @@ function DisplayThisMonthsActivities($selected_month_datetime)
               </div>
           </div>";
 
+    // delete activity modal
     echo "
           <div id='deleteModal' style='display:none;' class='modal'>
               <div class='modal-content'>
@@ -330,105 +432,11 @@ function DisplayThisMonthsActivities($selected_month_datetime)
               </div>
           </div>";
 
-    echo "
-          <script>
-          function openEditModal(id, date, value, notes) {
-              document.getElementById('edit_log_id').value = id;
-              document.getElementById('edit_date').value = date;
-              document.getElementById('edit_value').value = value;
-              document.getElementById('edit_notes').value = notes;
-              document.getElementById('editModal').style.display = 'flex';
-          }
-          function openAddModal() {
-              document.getElementById('addModal').style.display = 'flex';
-          }
-          function confirmDelete(id) {
-              document.getElementById('delete_log_id').value = id;
-              document.getElementById('deleteModal').style.display = 'flex';
-          }
-          function closeModal(id) {
-              document.getElementById(id).style.display = 'none';
-          }
-          window.onclick = function(e) {
-              ['editModal','addModal','deleteModal'].forEach(function(id) {
-                  var m = document.getElementById(id);
-                  if (e.target === m) m.style.display = 'none';
-              });
-          }
-          </script>";
   } else {
     echo "No activities found or query failed.";
   }
 }
 
 
-function DisplayMonthSelect()
-{
-  $current_month_datetime = new DateTime('first day of this month 00:00:00');
-  $current_m_y = $current_month_datetime->format('m-y');
 
-  $selected_month_param = isset($_GET['date']) ? $_GET['date'] : $current_m_y;
-  $selected_month_datetime = DateTime::createFromFormat('m-y', $selected_month_param);
-  $selected_month_datetime->modify('first day of this month 00:00:00');
 
-  if ($selected_month_datetime > $current_month_datetime) {
-    header("Location: activity-log.php?date=" . $current_m_y);
-    exit;
-  }
-
-  $prev_month = (clone $selected_month_datetime)->modify('-1 month')->format('m-y');
-  $next_month = (clone $selected_month_datetime)->modify('+1 month')->format('m-y');
-
-  echo "<div class='activity-month-select-container'>";
-  echo "<a href='?date=$prev_month' class='month-select-arrow'>❮</a>";
-  echo "<p class='activity-month-header'>" . $selected_month_datetime->format('F Y') . "</p>";
-  if ($selected_month_datetime < $current_month_datetime) {
-    echo "<a href='?date=$next_month' class='month-select-arrow'>❯</a>";
-  } else {
-    echo "<p> </p>";
-  }
-  echo "</div>";
-
-  if ($selected_month_datetime < $current_month_datetime) {
-    echo "<div class='month-select-today'><a href='?date=" . $current_m_y . "'>Jump to now</a></div>";
-  }
-
-  DisplayThisMonthsActivities($selected_month_datetime);
-}
-
-$signuperror = "";
-$signinerror = "";
-
-if (array_key_exists('sign-in', $_GET)) {
-  $show = 'sign-in';
-} else {
-  $show = 'sign-up';
-}
-
-if (isset($_GET['signin-error'])) {
-  if ($_GET['signin-error'] == "invalid_credentials") {
-    $signinerror = "Invalid username/email or password.";
-  }
-}
-
-if (isset($_GET['signup-error'])) {
-  if ($_GET['signup-error'] == "invalid_username") {
-    $signuperror = "Username must be longer than 2 characters";
-  } else if ($_GET['signup-error'] == "invalid_password") {
-    $signuperror = "Password must be longer than 8 characters";
-  } else if ($_GET['signup-error'] == "invalid_email") {
-    $signuperror = "Email is invalid";
-  } else if ($_GET['signup-error'] == "invalid_fname") {
-    $signuperror = "Must include first name";
-  } else if ($_GET['signup-error'] == "invalid_lname") {
-    $signuperror = "Must include second name";
-  } else if ($_GET['signup-error'] == "username_taken") {
-    $signuperror = "Username already in use";
-  } else if ($_GET['signup-error'] == "email_taken") {
-    $signuperror = "Email already in use";
-  } else if ($_GET['signup-error'] == "duplicate_entry") {
-    $signuperror = "Shouldn't happen, fallback for non username/email reasons";
-  } else if ($_GET['signup-error'] == "db_error") {
-    $signuperror = "UH OH PANIC! UH OH PANIC! UH OH PANIC! UH OH PANIC! UH OH PANIC! UH OH PANIC!";
-  }
-}
