@@ -11,7 +11,7 @@
     </div>
     
 
-    <div class="dashboard-container" style="padding-top: 230px; font-size: 22px;">
+    <div class="dashboard-container" >
         <!-- graphs -->
     </div>
     

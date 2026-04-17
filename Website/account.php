@@ -28,19 +28,19 @@
     </div>
 
     <div class="account-container">
-        <p style="font-family: Glacial Indifference Bold; font-size: 30px;">Account Details</p>
+        <p>Account Details</p>
 
-        <p style="font-family: Glacial Indifference Bold; font-size: 22px;">First name:</p>
-        <p style="font-family: Glacial Indifference; font-size: 20px; margin-top: -15px;"><?php echo isset($_SESSION['user_id']) ? $user['Fname'] : ""; ?></p>
+        <p id="account-title">First name:</p>
+        <p2 id="account-info"><?php echo isset($_SESSION['user_id']) ? $user['Fname'] : ""; ?></p2>
 
-        <p style="font-family: Glacial Indifference Bold; font-size: 22px;">Last name:</p>
-        <p style="font-family: Glacial Indifference; font-size: 20px; margin-top: -15px;"><?php echo isset($_SESSION['user_id']) ? $user['Lname'] : ""; ?></p>
+        <p id="account-title">Last name:</p>
+        <p id="account-info"><?php echo isset($_SESSION['user_id']) ? $user['Lname'] : ""; ?></p2>
 
-        <p style="font-family: Glacial Indifference Bold; font-size: 22px;">Email:</p>
-        <p style="font-family: Glacial Indifference; font-size: 20px; margin-top: -15px;"><?php echo isset($_SESSION['user_id']) ? $user['Email'] : ""; ?></p>
+        <p id="account-title">Email:</p>
+        <p id="account-info"><?php echo isset($_SESSION['user_id']) ? $user['Email'] : ""; ?></p2>
 
-        <p style="font-family: Glacial Indifference Bold; font-size: 22px;">People in household:</p>
-        <p style="font-family: Glacial Indifference; font-size: 20px; margin-top: -15px;">
+        <p id="account-title">People in household:</p>
+        <p id="account-info">
             <?php 
                 if (isset($_SESSION['user_id']) && isset($user['Num_Of_Household_Members'])) {
                     echo $user['Num_Of_Household_Members'] . ($user['Num_Of_Household_Members'] == 1 ? " person" : " people");
