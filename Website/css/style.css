@@ -55,6 +55,8 @@ body {
 /* ---- dashboard ---- */
 .dashboard-container {
     padding: 30px;
+    padding-top: 230px; 
+    font-size: 22px;
 }
 
 /* ---- about us ---- */
@@ -196,14 +198,20 @@ table tr {
     margin-top: 300px;
 }
 
-.sign-up-in-left-container {
-    display: inline-block;
-    float: left;
-    width: 60%;
-    background-color: white;
-    text-align: center;
-    align-items: center;
-    align-content: center;
+.account-container p{
+    font-family: Glacial Indifference Bold; 
+    font-size: 30px;
+}
+
+#account-title{
+    font-family: Glacial Indifference Bold; 
+    font-size: 22px;
+}
+
+#account-info{
+    font-family: Glacial Indifference; 
+    font-size: 20px; 
+    margin-top: -15px;
 }
 
 .account-side-container {
@@ -219,31 +227,21 @@ table tr {
     align-content: center;
 }
 
+.account-side-container div h1{
+    font-family: 'Glacial Indifference'; 
+    color: white;
+}
+
+.account-side-container div p{
+    font-family: 'Glacial Indifference'; 
+    color: white; 
+    font-size: 24px;
+}
+
 .error-text {
     color: var(--error-colour);
 }
 
-.sign-in-button {
-    border-radius: 10px;
-    padding: 5px;
-    width: 311.6px;
-    height: 43px;
-    color: white;
-    font-size: 16px;
-    background-color: var(--lighter-theme-colour);
-    border: none;
-    cursor: pointer;
-}
-.sign-up-button {
-    border-radius: 10px;
-    width: 270px;
-    height: 42px;
-    color: black;
-    font-size: 16px;
-    background-color: white;
-    border: none;
-    cursor: pointer;
-}
 
 .account-input-form {
     width: 300px;
@@ -269,3 +267,55 @@ table tr {
     justify-content: center;
     gap: 3px;
 }
+
+
+.sign-in-button {
+    border-radius: 10px;
+    padding: 5px;
+    width: 311.6px;
+    height: 43px;
+    color: white;
+    font-size: 16px;
+    background-color: var(--lighter-theme-colour);
+    border: none;
+    cursor: pointer;
+}
+
+.sign-up-button {
+    border-radius: 10px;
+    width: 270px;
+    height: 42px;
+    color: black;
+    font-size: 16px;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+}
+
+.login-container{
+    display: flex; 
+    width: 100%; 
+    height: 100%; 
+    margin: 0px; 
+    left: 0px; 
+    position: absolute; 
+    top: 0px; 
+    z-index: -1;
+}
+
+.sign-up-in-left-container {
+    display: inline-block;
+    float: left;
+    width: 60%;
+    background-color: white;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    padding-top: 10px;
+}
+
+#sign-up-container h1{
+    font-family: 'Glacial Indifference Bold'; 
+    font-size: 40px;
+}
+

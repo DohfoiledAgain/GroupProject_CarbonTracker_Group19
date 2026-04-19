@@ -23,15 +23,20 @@
     padding: 10px;
     border-radius: 10px;
 }
-    #tc-overlay .content #scroll-box {
-        padding: 20px;
-        max-width: 90%;
-        background-color: var(--main-theme-colour);
-        -ms-overflow-style: none; /* Internet Explorer 10+ */
-        scrollbar-width: thin;
-        overflow-x: hidden !important;
 
-    }
+#tc-overlay .content h1{
+    font-family: Glacial Indifference;
+}
+
+#tc-overlay .content #scroll-box {
+    padding: 20px;
+    max-width: 90%;
+    background-color: var(--main-theme-colour);
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: thin;
+    overflow-x: hidden !important;
+
+}
 #tc-overlay .content #checkbox {
     padding: 20px;
     max-width: 50%;
@@ -59,4 +64,8 @@
     border: none;
     cursor: pointer;
     background-color: white !important;
+}
+
+#scoll-box{
+     overflow:scroll;
 }

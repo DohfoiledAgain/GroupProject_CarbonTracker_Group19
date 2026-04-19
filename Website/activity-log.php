@@ -12,14 +12,18 @@
     
     <div class="activity-log-container">
 
-        <?php DisplayMonthSelect(); ?>
-
+        <?php DisplayActivityLog(); ?>
         
     </div>
+    
+    <script>
+          
+    </script>
+    <script src="js/functions.js"></script>
+
     <?php
       include("components/loginprompt.php");
     ?>
-    
-    <script src="js/functions.js"></script>
+
 </body>
 </html>
