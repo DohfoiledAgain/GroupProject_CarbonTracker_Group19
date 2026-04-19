@@ -54,9 +54,25 @@ body {
 
 /* ---- dashboard ---- */
 .dashboard-container {
-    padding: 30px;
-    padding-top: 230px; 
+    padding: 10px;
+    padding-top: 150px; 
     font-size: 22px;
+    align-items: center;
+    text-align: center;
+    display: block;
+    margin: auto;
+    width: 50%;
+}
+
+/* ---- Reccomendations ----*/
+#Reccomendations {
+    align-items: center;
+    text-align: center;
+    padding: 60px;
+    font-size: 25px;
+    border-radius: 25px;
+    border: 4px solid #73AD21;
+    background-color: #0d3d1d;
 }
 
 /* ---- about us ---- */
@@ -241,6 +257,7 @@ table tr {
 .error-text {
     color: var(--error-colour);
 }
+
 
 
 .account-input-form {

@@ -10,11 +10,17 @@
         <p>Your CO2 stats</p>
     </div>
     
-    <br><br><br><br><br><br><br><br><br><br><h2>Emissions by Category</h2><br>
-    <div class="chartContainer" style="width: 600px; height: 600px;">
-        <!-- graphs display -->
+    <br><br><br>
+    <div class="dashboard-container"  style="width: 600px; height: 600px;">
+        <!-- graphs display pie chart -->
+        <h2>Emissions by Category</h2>
         <canvas id="chartCategories"></canvas>
-    <br><br><br><h2>Weekly Emissions</h2><br><br>
+        <br><h2>Weekly Emissions</h2>
+        <canvas id="barWeeklyEmissions"></canvas>
+    </div>
+
+    <div class="dashboard-container"  style="width: 600px; height: 600px;">
+        <!-- graphs display bar chart -->
         <canvas id="barWeeklyEmissions"></canvas>
     </div>
 
@@ -118,10 +124,27 @@
 
     </script>
 
+    <div id="Reccomendations">
+      <button onclick="RandomReccomendation()" style="font-size: 25px; background-color: alice; color: grey; border-radius: 25px;"> Reduction Reccomendation</button>
+      <br><br>
+      <p id="recbutt" style="color: #73AD21;">Press to get emission reduction tips</p>
+    </div>
+    <script>
+      
+      function RandomReccomendation()
+      {  
+        const reccs = ["Electricity Usage - Remember to turn off your lights when a room isn't in use!", "Gas Usage - Keep your doors and windows closed when the heating is on!", "Water Usage - Turn off the tap while you brush your teeth!", "Car Travel - Try to combine your errands into one single loop trip!", "Bus Travel - Walk or cycle for any trips that are under one mile!", "Coach/Train Travel - Try to book direct routes to avoid the unnecessary miles!"];
+        const random = Math.floor(Math.random() * reccs.length);
+        document.getElementById("recbutt").innerHTML = (random, reccs[random]);
+      }
+    </script>
 
     <?php
       include("components/loginprompt.php");
     ?>
     <script src="js/functions.js"></script>
+
+  
+
 </body>
 </html>
