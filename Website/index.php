@@ -25,7 +25,7 @@
     </div>
 
 
-    <script> // Graphs - rendering
+    <script> // Pie chart - rendering
     const categoryNames = ['Electricity','Gas','Water','Car Travel', 'Bus Travel','Coach travel'];
     const emissions = [ 10.8042, 15.0439, 17.3501, 7.15, 1.5, 0 ];
 
@@ -74,7 +74,7 @@
 
     </script>
 
-    <script> // Graphs - rendering
+    <script> // bar chart - rendering
     const Weekdays = ['Mon','Tues','Wed', 'Thur', 'Fri','Sat', 'Sun'];
     const weeklyEmissions = [ 16.8042, 13.0439, 9.3501, 10.15, 6.203, 8.345, 7.5607 ];
 
@@ -124,14 +124,14 @@
 
     </script>
 
-    <div id="Reccomendations">
+    <div id="Reccomendations"> <!-- emission reducing tips button-->
       <button onclick="RandomReccomendation()" style="font-size: 25px; background-color: alice; color: grey; border-radius: 25px;"> Reduction Reccomendation</button>
       <br><br>
       <p id="recbutt" style="color: #73AD21;">Press to get emission reduction tips</p>
     </div>
     <script>
       
-      function RandomReccomendation()
+      function RandomReccomendation() //function - picks randomly between tips for reducing emissions
       {  
         const reccs = ["Electricity Usage - Remember to turn off your lights when a room isn't in use!", "Gas Usage - Keep your doors and windows closed when the heating is on!", "Water Usage - Turn off the tap while you brush your teeth!", "Car Travel - Try to combine your errands into one single loop trip!", "Bus Travel - Walk or cycle for any trips that are under one mile!", "Coach/Train Travel - Try to book direct routes to avoid the unnecessary miles!"];
         const random = Math.floor(Math.random() * reccs.length);
