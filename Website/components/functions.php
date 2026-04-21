@@ -5,6 +5,11 @@ session_start();
 
 /* -------- Sign up / Sign in Form Checks */
 
+if (isset($_POST['about-us-redir'])) {
+      header("Location: about-us.php");
+      exit();
+  }
+
 if (isset($_POST['signup-redir'])) {
   header("Location: login.php?sign-up");
   exit();
@@ -267,6 +272,10 @@ function Temp()
 
 function DisplayActivityLog()
 {
+  if (!isset($_SESSION['user_id'])) {
+      echo "";
+      return;
+  }
   // determine current month and selected month
   $current_month_datetime = new DateTime('first day of this month 00:00:00');
   $current_m_y = $current_month_datetime->format('m-y');

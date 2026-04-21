@@ -1,10 +1,3 @@
-<?php
-  if (isset($_POST['about-us-redir'])) {
-      header("Location: about-us.php");
-      exit();
-  }
-?>
-
 <div id="login-overlay" style="<?php echo !$user ? 'display:flex' : 'display:none'; ?>">
   <div class="content">
     <h1 style="font-family: Glacial Indifference Bold">You are not signed in</h1>
