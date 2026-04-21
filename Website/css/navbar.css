@@ -37,6 +37,7 @@
     right: 0;
     top: 0;
     bottom: 0;
+    z-index: 2000;
 }
 .navbar-items {
     text-decoration: none;
@@ -111,7 +112,7 @@ nav ul li a {
     height: 100%;
     background-color: #08330d;
     padding-top: 60px;
-    z-index: 1001;
+    z-index: 2001;
     overflow-x: hidden;
     transition: 0.5s;
 }

@@ -203,6 +203,119 @@ table tr {
     background-color: #ededed;
 }
 
+.edit-delete-button {
+    border-radius: 10px;
+    padding: 4px 10px;
+    color: white;
+    width: 65px;
+    font-family: 'Glacial Indifference';
+    font-size: 15px;
+    background-color: var(--lighter-theme-colour);
+    border: none;
+    cursor: pointer;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.add-activity-btn {
+    border-radius: 10px;
+    padding: 6px 10px;
+    color: white;
+    font-size: 18px;
+    font-family: 'Glacial Indifference';
+    background-color: var(--lighter-theme-colour);
+    border: none;
+    cursor: pointer;
+    margin: 0 auto;
+    width: 250px;
+}
+
+.add-activity-btn-container {
+    text-align: center;
+    margin-top: -30px;
+    margin-bottom: 80px;
+}
+
+.activity-modal-overlay {
+    position: fixed;
+    z-index: 999;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background-color: #000a;
+    color: #fff;
+}
+.activity-modal-overlay .modal-content {
+    width: 30%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: var(--darker-theme-colour);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.add-modal {
+    height: 50%;
+}
+.edit-modal {
+    height: 35%;
+}
+.delete-modal {
+    height: 20%;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.modal-button {
+    border-radius: 10px;
+    padding: 6px 10px;
+    color: white;
+    width: 100px;
+    font-family: 'Glacial Indifference';
+    font-size: 15px;
+    background-color: var(--lighter-theme-colour);
+    border: none;
+    cursor: pointer;
+}
+
+.modal-content label {
+    font-family: 'Glacial Indifference';
+    font-size: 18px;
+}
+.modal-content input {
+    width: 60%;
+    height: 15px;
+    border-radius: 5px;
+    border: 1px solid #cccccc;
+    padding: 5px;
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+.modal-content .date-input {
+    font-family: 'Sans Serif Collection';
+}
+.modal-content select {
+    font-size: 13px;
+    height: 28px;
+    border-radius: 5px;
+}
+
+
 /* ---- account ---- */
 .account-container {
     float: left;

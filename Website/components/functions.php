@@ -365,27 +365,29 @@ function DisplayThisMonthsActivities($selected_month_datetime)
                   <td>{$row['Notes']}</td>
                   <td>{$row['Calculated_Emissions']} {$row['Emission_Unit']}</td>
                   <td class='action-buttons'>
-                      <button onclick='openEditModal({$logId}, \"{$dateForEditInput}\", \"{$escapedValue}\", \"{$escapedNotes}\")'>Edit</button>
-                      <button onclick='confirmDelete({$logId})'>Delete</button>
+                      <button onclick='openEditModal({$logId}, \"{$dateForEditInput}\", \"{$escapedValue}\", \"{$escapedNotes}\")' class='edit-delete-button'>Edit</button>
+                      <button onclick='confirmDelete({$logId})' class='edit-delete-button'>Delete</button>
                   </td>
               </tr>";
     }
     echo "</table>";
 
     // edit activity modal
-    echo "<button onclick='openAddModal()' class='add-activity-btn'>+ Add Activity</button>";
+    echo "<div class='add-activity-btn-container'><button onclick='openAddModal()' class='add-activity-btn'>+ Add Activity</button></div>";
     echo "
-          <div id='editModal' style='display:none;' class='modal'>
-              <div class='modal-content'>
-                  <h3>Edit Activity</h3>
-                  <form method='POST'>
-                      <input type='hidden' name='action' value='edit_activity'>
-                      <input type='hidden' name='log_id' id='edit_log_id'>
-                      <label>Date: <input type='date' name='activity_date' id='edit_date'></label>
-                      <label>Value: <input type='number' step='0.05' value='0' name='value' id='edit_value'></label>
-                      <label>Notes: <input type='text' name='notes' id='edit_notes'></label>
-                      <button type='submit'>Save</button>
-                      <button type='button' onclick='closeModal(\"editModal\")'>Cancel</button>
+          <div id='editModal' style='display:none;' class='activity-modal-overlay'>
+              <div class='modal-content edit-modal'>
+                  <p style='text-align: center; font-family: \"Glacial Indifference Bold\"; font-size: 22px; margin: 0;'>Edit Activity</p>
+                  <form method='POST' style='margin-top: -60px'>
+                      <input type='hidden' name='action' value='edit_activity'><br><br>
+                      <input type='hidden' name='log_id' id='edit_log_id'><br><br>
+                      <label>Date: <input type='date' name='activity_date' id='edit_date' class='date-input'></label><br><br>
+                      <label>Value: <input type='number' step='0.05' value='0' name='value' id='edit_value'></label><br><br>
+                      <label>Notes: <input type='text' name='notes' id='edit_notes'></label><br><br>
+                      <div class='button-group'>
+                          <button type='submit' class='modal-button'>Save</button>
+                          <button type='button' onclick='closeModal(\"editModal\")' class='modal-button'>Cancel</button>
+                      </div>
                   </form>
               </div>
           </div>";
@@ -399,35 +401,34 @@ function DisplayThisMonthsActivities($selected_month_datetime)
     }
 
     echo "
-          <div id='addModal' style='display:none;' class='modal'>
-              <div class='modal-content'>
-                  <h3>Add Activity</h3>
-                  <form method='POST'>
-                      <input type='hidden' name='action' value='add_activity'>
-                      <label>Date: <input type='date' name='activity_date'></label>
-                      <label>Category: 
-                          <select name='category_id'>
-                              {$categoryOptions}
-                          </select>
-                      </label>
-                      <label>Value: <input type='number' step='0.05' value='0' name='value' id='edit_value'></label>
-                      <label>Notes: <input type='text' name='notes'></label>
-                      <button type='submit'>Add</button>
-                      <button type='button' onclick='closeModal(\"addModal\")'>Cancel</button>
-                  </form>
-              </div>
-          </div>";
+        <div id='addModal' class='activity-modal-overlay' style='display:none;'>
+            <div class='modal-content add-modal'>
+                <p style='text-align: center; font-family: \"Glacial Indifference Bold\"; font-size: 22px; margin: 0;'>Add Activity</p>
+                <form method='POST'> <input type='hidden' name='action' value='add_activity'><br><br>
+                    <label>Date: <input type='date' class='date-input' name='activity_date'></label><br><br>
+                    <label>Category: <select name='category_id'> {$categoryOptions} </select> </label><br><br>
+                    <label>Value: <input type='number' step='0.05' value='0' name='value' id='edit_value'></label><br><br>
+                    <label>Notes: <input type='text' name='notes'></label><br><br><br>
+                    <div class='button-group'>
+                        <button type='submit' class='modal-button'>Add</button>
+                        <button type='button' onclick='closeModal(\"addModal\")' class='modal-button'>Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>";
 
     // delete activity modal
     echo "
-          <div id='deleteModal' style='display:none;' class='modal'>
-              <div class='modal-content'>
+          <div id='deleteModal' style='display:none;' class='activity-modal-overlay'>
+              <div class='modal-content delete-modal'>
                   <p>Are you sure you want to delete this activity?</p>
                   <form method='POST'>
                       <input type='hidden' name='action' value='delete_activity'>
                       <input type='hidden' name='log_id' id='delete_log_id'>
-                      <button type='submit'>Yes, delete</button>
-                      <button type='button' onclick='closeModal(\"deleteModal\")'>Cancel</button>
+                      <div class='button-group'>
+                          <button type='submit' class='modal-button'>Yes, delete</button>
+                          <button type='button' onclick='closeModal(\"deleteModal\")' class='modal-button'>Cancel</button>
+                      </div>
                   </form>
               </div>
           </div>";
