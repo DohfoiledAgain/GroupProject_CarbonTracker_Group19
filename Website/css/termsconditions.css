@@ -32,7 +32,7 @@
     padding: 20px;
     max-width: 90%;
     background-color: var(--main-theme-colour);
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    -ms-overflow-style: none;
     scrollbar-width: thin;
     overflow-x: hidden !important;
 

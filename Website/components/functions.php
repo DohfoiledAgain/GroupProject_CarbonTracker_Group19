@@ -214,6 +214,44 @@ if (isset($_POST['action'])) {
 }
 
 
+/* ------------ Admin Page Form Checks */
+
+if (isset($_POST['action'])) {
+  $db = dbConnect();
+  $action = $_POST['action'];
+  $redirect = $_SERVER['HTTP_REFERER'] ?? 'admin.php';
+
+  if ($action === 'delete_user') {
+    $stmt = $db->prepare("DELETE FROM User WHERE User_ID = :id");
+    $stmt->bindValue(':id', $_POST['user_id'], SQLITE3_INTEGER);
+    $stmt->execute();
+    header("Location: " . $redirect);
+    exit();
+  }
+
+  if ($action === 'edit_user') {
+    $user_id = $_POST['user_id'];
+    $user_username = $_POST['user_username'];
+    $user_email = $_POST['user_email'];
+    $user_fname = $_POST['user_fname'];
+    $user_lname = $_POST['user_lname'];
+
+    $stmt = $db->prepare("
+        UPDATE User
+        SET Username = :username, Email = :email, Fname = :fname, Lname = :lname
+        WHERE User_ID = :user_id");
+    $stmt->bindValue(':username', $user_username, SQLITE3_TEXT);
+    $stmt->bindValue(':email', $user_email, SQLITE3_TEXT);
+    $stmt->bindValue(':fname', $user_fname, SQLITE3_TEXT);
+    $stmt->bindValue(':lname', $user_lname, SQLITE3_TEXT);
+    $stmt->bindValue(':user_id', $user_id, SQLITE3_INTEGER);
+    $stmt->execute();
+    header("Location: " . $redirect);
+    exit();
+  }
+}
+
+
 /* ------------ T&Cs Button Form Checks */
 
 if (isset($_GET['show-terms'])) {
@@ -874,5 +912,105 @@ function DisplayThisMonthsActivities($selected_month_datetime)
         echo "No activities found or query failed.";
     }
 }
+
+
+/* ------------------ Activity log functions */
+
+function DisplayAllUsers()
+{
+    $db = dbConnect();
+
+    // retrieve database values
+    $stmt = $db->prepare("
+            SELECT U.*, SUM(AL.Calculated_Emissions) AS Total_Emissions
+            FROM User U
+            LEFT JOIN Activity_Log AL ON U.User_ID = AL.User_ID
+            GROUP BY U.User_ID
+            ORDER BY U.User_ID ASC
+        ");
+    $results = $stmt->execute();
+
+    if ($results) {
+        echo "
+                <table class='activities-table'>
+                <tr>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>First name</th>
+                    <th>Last name</th>
+                    <th>Total Emissions</th>
+                    <th>Actions</th>
+                </tr>";
+    
+        // display table contents
+        while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
+
+            $total = $row['Total_Emissions'] ?: 0;
+
+            $userID = $row['User_ID'];
+            $escapedUsername = htmlspecialchars($row['Username'], ENT_QUOTES);
+            $escapedEmail = htmlspecialchars($row['Email'], ENT_QUOTES);
+            $escapedFname = htmlspecialchars($row['Fname'], ENT_QUOTES);
+            $escapedLname = htmlspecialchars($row['Lname'], ENT_QUOTES);
+
+            echo "
+                <tr id='row-{$userID}'>
+                    <td>{$userID}</td>
+                    <td>{$row['Username']}</td>
+                    <td>{$row['Email']}</td>
+                    <td>{$row['Fname']}</td>
+                    <td>{$row['Lname']}</td>
+                    <td><b>{$total} kgCO₂e</b></td>
+                    <td class='action-buttons'>
+                        <button onclick='openEditUserModal({$userID}, \"{$escapedUsername}\", \"{$escapedEmail}\", \"{$escapedFname}\", \"{$escapedLname}\")' class='edit-delete-button'>Edit</button>
+                        <button onclick='confirmDeleteUser({$userID})' class='edit-delete-button'>Delete</button>
+                    </td>
+                </tr>";
+        }
+        echo "</table>";
+
+        // edit user modal
+        echo "
+            <div id='editModal' style='display:none;' class='activity-modal-overlay'>
+                <div class='modal-content edit-modal'>
+                    <p style='text-align: center; font-family: \"Glacial Indifference Bold\"; font-size: 22px; margin: 0;'>Edit User</p>
+                    <form method='POST' style='margin-top: -60px'>
+                        <input type='hidden' name='action' value='edit_user'><br><br>
+                        <input type='hidden' name='user_id' id='edit_user_id'><br><br>
+                        <label>Username: <input type='text' name='user_username' id='edit_username'></label><br><br>
+                        <label>Email: <input type='email' name='user_email' id='edit_email'></label><br><br>
+                        <label>First name: <input type='text' name='user_fname' id='edit_fname'></label><br><br>
+                        <label>Last name: <input type='text' name='user_lname' id='edit_lname'></label><br><br>
+                        <div class='button-group'>
+                            <button type='submit' class='modal-button'>Save</button>
+                            <button type='button' onclick='closeModal(\"editModal\")' class='modal-button'>Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>";
+
+        // delete user modal
+        echo "
+            <div id='deleteModal' style='display:none;' class='activity-modal-overlay'>
+                <div class='modal-content delete-modal'>
+                    <p>Are you sure you want to delete this user?</p>
+                    <form method='POST'>
+                        <input type='hidden' name='action' value='delete_user'>
+                        <input type='hidden' name='user_id' id='delete_user_id'>
+                        <div class='button-group'>
+                            <button type='submit' class='modal-button'>Yes, delete</button>
+                            <button type='button' onclick='closeModal(\"deleteModal\")' class='modal-button'>Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>";
+
+    }
+    else {
+        echo "No users found or query failed.";
+    }
+}
+
 
 ?>

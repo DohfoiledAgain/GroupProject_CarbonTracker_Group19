@@ -78,7 +78,7 @@ footer {
 
 .dashboard-container {
     padding: 0 50px;
-    margin-top: 220px;
+    margin-top: 100px;
     font-size: 22px;
     text-align: center;
     display: flex;
@@ -188,7 +188,7 @@ footer {
 }
 
 .about-us-top-section {
-    margin-top: 300px;
+    margin-top: 190px;
     align-items: center;
     text-align: center;
     padding: 1rem 0rem;
@@ -231,7 +231,7 @@ footer {
 .activity-log-container {
     width: 60%;
     margin: auto;
-    margin-top: 180px;
+    margin-top: 60px;
 }
 
 .activity-month-select-container {
@@ -413,7 +413,7 @@ table tr {
     text-align: center;
     align-items: center;
     align-content: center;
-    margin-top: 200px;
+    margin-top: 100px;
 }
 
 .account-container p{
@@ -537,3 +537,11 @@ table tr {
     font-size: 40px;
 }
 
+
+/* ---- admin page ---- */
+
+.admin-container {
+    width: 60%;
+    margin: auto;
+    margin-top: 0px;
+}

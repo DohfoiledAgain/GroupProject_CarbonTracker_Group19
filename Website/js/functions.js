@@ -72,6 +72,30 @@ function randomRecommendations() {
 }
 
 
+// ------------ Admin page Functions
+function openEditUserModal(id, username, email, fname, lname) {
+    document.getElementById('edit_user_id').value = id;
+    document.getElementById('edit_username').value = username;
+    document.getElementById('edit_email').value = email;
+    document.getElementById('edit_fname').value = fname;
+    document.getElementById('edit_lname').value = lname;
+    document.getElementById('editModal').style.display = 'flex';
+}
+function confirmDeleteUser(id) {
+    document.getElementById('delete_user_id').value = id;
+    document.getElementById('deleteModal').style.display = 'flex';
+}
+function closeModal(id) {
+    document.getElementById(id).style.display = 'none';
+}
+window.onclick = function (e) {
+    ['editModal', 'addModal', 'deleteModal'].forEach(function (id) {
+        var m = document.getElementById(id);
+        if (e.target === m) m.style.display = 'none';
+    });
+}
+
+
 // ------------ Other Functions
 function closeTC() {
     const overlay = document.getElementById('tc-overlay');

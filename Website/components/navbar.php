@@ -1,4 +1,10 @@
 <?php
+    session_start();
+
+    $isAdmin = false;
+    if (isset($_SESSION['user_id']) && $_SESSION['user_id'] == 1) {
+        $isAdmin = true;
+    }
 
     // when the login button is clicked
     if(isset($_POST['login']))
@@ -39,11 +45,7 @@
         <li><a href="about-us.php">About Us</a></li>
         <hr/>
         <li><a href="<?php echo isset($_SESSION['user_id']) ? 'account.php' : 'login.php?sign-in'; ?>">Account</a></li>
+        <?php if ($isAdmin) { echo "<hr/><li><a href='admin.php'>🔒 Admin</a></li>"; } ?>
+        
     </ul>
 </div>
-
-<script>
-    
-    // space for navbar js
-
-</script>
