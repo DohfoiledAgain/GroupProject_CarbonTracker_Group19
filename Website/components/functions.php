@@ -256,15 +256,403 @@ function getUser()
 }
 
 /* ------------------ Dashboard functions */
+/* ----------- Recommendations functions */
 
-function Temp()
+function ReturnStyledCategoryName($categoryName)
 {
-  $db = dbConnect();
-  $results = $db->query(
-    "SELECT *
-    FROM Activity_Log
-    Activity_Date ASC"
-  );
+    switch ($categoryName) {
+            case 'Electricity (grid)':
+                return "⚡ Electricity";
+            case 'Gas usage':
+                return "🔥 Gas";
+            case 'Water usage':
+                return "💧 Water";
+            case 'Car travel':
+                return "🚗 Car Travel";
+            case 'Bus travel':
+                return "🚌 Bus Travel";
+            case 'Coach travel':
+                return "🚐 Coach Travel";
+            case 'Train travel (UK)':
+                return "🚂 Train Travel";
+        }
+}
+
+function DisplayRecommendations()
+{
+    $recommendationsArray = [];
+
+    $db = dbConnect();
+
+    // calculate total emissions per category, ordered by highest total emissions first
+    $stmt = $db->prepare("
+        SELECT C.Category_ID, C.Name, C.Emission_Unit, SUM(AL.Calculated_Emissions) AS Total
+        FROM Activity_Log AL
+        INNER JOIN Emission_Category C ON AL.Category_ID = C.Category_ID
+        WHERE AL.User_ID = :user_id
+        GROUP BY C.Category_ID
+        ORDER BY Total DESC
+    ");
+
+    $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+    $results = $stmt->execute();
+
+    echo "<ul>";
+
+    // loop through each category
+    while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
+        
+        $messageToShow = "No specific recommendation to give.";
+
+        // retrieve the total carbon emissions for this category in the past 7 days
+        $today = (new DateTime('now'))->format('Y-m-d');
+        $weekAgo= (new DateTime('7 days ago'))->format('Y-m-d');
+
+        $weekStmt = $db->prepare("
+            SELECT SUM(Calculated_Emissions) AS Weekly_Total
+            FROM Activity_Log
+            WHERE User_ID = :user_id
+            AND Category_ID = :category_id
+            AND (
+                substr(Activity_Date, 7, 4) || '-' || substr(Activity_Date, 4, 2) || '-' || substr(Activity_Date, 1, 2)
+            ) BETWEEN :weekAgo AND :today
+        ");
+        $weekStmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+        $weekStmt->bindValue(':category_id', $row['Category_ID'], SQLITE3_TEXT);
+        $weekStmt->bindValue(':weekAgo', $weekAgo, SQLITE3_TEXT);
+        $weekStmt->bindValue(':today', $today, SQLITE3_TEXT);
+
+        $weekResult = $weekStmt->execute();
+        $weekRow = $weekResult->fetchArray(SQLITE3_ASSOC);
+
+        $weeklyTotal = $weekRow['Weekly_Total'] ?? 0;
+
+        
+        // retrieve all messages and their trigger value for each category
+        $recStmt = $db->prepare("
+            SELECT Message, Weekly_Trigger_Value
+            FROM Recommendations
+            WHERE Category_ID = :category
+            ORDER BY Weekly_Trigger_Value DESC");
+        $recStmt->bindValue(':category', $row['Category_ID'], SQLITE3_TEXT);
+
+        $recResult = $recStmt->execute();
+        while ($recRow = $recResult->fetchArray(SQLITE3_ASSOC)) {
+            $weeklyTrigger = $recRow['Weekly_Trigger_Value'];
+
+            if ($weeklyTotal >= $weeklyTrigger) {
+                $messageToShow = $recRow['Message'];
+                break; 
+            }
+        }
+
+        // display the corresponding recommendation and total emissions for each category, only if there has been an entry for it this week
+        if ($weeklyTotal != 0) {
+            $recommendationsArray[] = "
+                <li style='margin-bottom: 20px; font-family: Glacial Indifference;'>
+                    <h3 style='display:inline; font-size: 23px; font-weight: bold';'>" . ReturnStyledCategoryName($row['Name']) . " </h3><p style='font-size: 20px; font-style: italic; display:inline;'>- " . $weeklyTotal . " " . $row['Emission_Unit'] . " <b>this week</b></p>" . 
+                    "<p style='font-size: 19px; margin-top: 5px;'>" . $messageToShow . "</p>" . 
+                "</li>";
+        }
+    }
+
+    // pass the php array to JS
+    echo "<script>const recommendations = " . json_encode($recommendationsArray) . ";</script>";
+    // do the same with the full list of recommendations for the random tips button
+    $allRecommendationsArray = ReturnAllRecommendations();
+    echo "<script>const allRecommendations = " . json_encode($allRecommendationsArray) . ";</script>";
+
+    echo "<div id='recommendation-container' style='min-height: 100px;'>
+            <p id='recommendation-text' style='padding: 0;'></p>
+          </div>";
+
+    echo "<button onclick='cycleRecommendation()' class='recommendation-button'> Next tip </button>";
+    echo "<button onclick='randomRecommendations()' class='recommendation-button'> 5 random tips </button>";
+    echo "</ul>";
+}
+
+function ReturnAllRecommendations()
+{
+    $db = dbConnect();
+    $stmt = $db->prepare("
+        SELECT R.*, E.Name
+        FROM Recommendations R
+        INNER JOIN Emission_Category E ON R.Category_ID = E.Category_ID
+    ");
+    $result = $stmt->execute();
+    $allRecs = [];
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        $allRecs[] = "
+                <li style='margin-bottom: 20px; font-family: Glacial Indifference;'>
+                <h3 style='display:inline; font-size: 23px; font-weight: bold';'>" . ReturnStyledCategoryName($row['Name']) . " </h3>" . 
+                "<p style='font-size: 19px; margin-top: 5px;'>" . $row['Message'] . "</p>" . 
+                "</li>";
+    }
+    return $allRecs;
+}
+
+function DisplayTotalEmissions()
+{
+    $db = dbConnect();
+
+    $stmt = $db->prepare("
+            SELECT SUM(Calculated_Emissions) AS Grand_Total
+            FROM Activity_Log AL
+            WHERE AL.User_ID = :user_id 
+        ");
+    $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+    $results = $stmt->execute();
+
+    if ($row = $results->fetchArray(SQLITE3_ASSOC)) {
+        $totalEmissions = $row['Grand_Total'] ?? 0;
+        echo "<p style='font-size: 28px; margin-top: 5px; font-family: Glacial Indifference; color: #0c3b18; margin-left: 18px;'><b>" . $totalEmissions . "</b> kgCO₂e" . "</p>";
+    }   
+}
+
+function DisplayDashboardActivityLog()
+{
+    if (!isset($_SESSION['user_id'])) {
+        echo "";
+        return;
+    }
+
+    // display log for this month
+    DisplayTodaysActivities();
+}
+
+function DisplayTodaysActivities()
+{
+    $db = dbConnect();
+    $today = (new DateTime('now'))->format('d-m-Y');
+
+
+    // retrieve database values
+    $stmt = $db->prepare("
+            SELECT AL.*, C.Name, C.Unit, C.Emission_Unit
+            FROM Activity_Log AL
+            INNER JOIN Emission_Category C ON AL.Category_ID = C.Category_ID
+            WHERE AL.User_ID = :user_id 
+            AND AL.Activity_Date = :today
+            ORDER BY AL.Activity_Date ASC
+        ");
+    $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+    $stmt->bindValue(':today', $today, SQLITE3_TEXT);
+    $results = $stmt->execute();
+
+    // if no row is present, display message instead
+    $firstRow = $results->fetchArray(SQLITE3_ASSOC);
+    if (!$firstRow) {
+        echo "<p style='text-align: center; font-style: italic; color: var(--main-theme-colour); padding: 20px;'>
+                No activities logged for today yet!
+              </p>";
+        return;
+    }
+
+    echo "
+            <table class='dashboard-activities-table'>
+            <tr>
+                <th>Category</th>
+                <th>Value</th>
+                <th>Notes</th>
+                <th>CO2 Emissions</th>
+            <tr></tr>
+            </tr>";
+
+    // display the first row
+    echo "
+        <tr id='row-{$firstRow['Log_ID']}'>
+            <td>" . htmlspecialchars($firstRow['Name']) . "</td>
+            <td>" . htmlspecialchars($firstRow['Value']) . " {$firstRow['Unit']}</td>
+            <td>" . htmlspecialchars($firstRow['Notes']) . "</td>
+            <td>{$firstRow['Calculated_Emissions']} {$firstRow['Emission_Unit']}</td>
+        </tr>";
+    
+    // display table contents
+    while ($row = $results->fetchArray(SQLITE3_ASSOC))
+    {
+
+        $logId = $row['Log_ID'];
+        $escapedNotes = htmlspecialchars($row['Notes'], ENT_QUOTES);
+        $escapedValue = htmlspecialchars($row['Value'], ENT_QUOTES);
+
+            
+        echo "
+        <tr id='row-{$logId}'>
+            <td>{$row['Name']}</td>
+            <td>{$row['Value']} {$row['Unit']}</td>
+            <td>{$row['Notes']}</td>
+            <td>{$row['Calculated_Emissions']} {$row['Emission_Unit']}</td>
+        </tr>";
+            
+    }
+    echo "</table>";
+    
+}
+
+
+/* ----------- Chart functions */
+
+function ReturnTotalUserEmissions()
+{
+    $db = dbConnect();
+
+    // retrieve database values
+    $stmt = $db->prepare("
+            SELECT SUM(AL.Calculated_Emissions) AS Total_Emissions, C.Name, C.Emission_Unit
+            FROM Activity_Log AL
+            INNER JOIN User U ON AL.User_ID = U.User_ID
+            INNER JOIN Emission_Category C ON AL.Category_ID = C.Category_ID
+            WHERE U.User_ID = :user_id 
+            GROUP BY C.Name
+            ORDER BY C.Name ASC
+        ");
+    $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+    $results = $stmt->execute();
+
+    if ($results) {
+        $emissionsData = []; 
+        while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
+            $emissionsData[] = $row['Total_Emissions'];
+        }
+
+        return $emissionsData;
+    }
+    else {
+        echo "No activities found or query failed.";
+    }
+}
+
+function ReturnEmissionsCategories()
+{
+    $db = dbConnect();
+
+    // retrieve database values
+    $stmt = $db->prepare("
+            SELECT C.Name, C.Emission_Unit
+            FROM Activity_Log AL
+            INNER JOIN User U ON AL.User_ID = U.User_ID
+            INNER JOIN Emission_Category C ON AL.Category_ID = C.Category_ID
+            WHERE U.User_ID = :user_id 
+            GROUP BY C.Name
+            ORDER BY C.Name ASC
+        ");
+    $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+    $results = $stmt->execute();
+
+    if ($results) {
+        $emissionsData = []; 
+        while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
+            $emissionsData[] = $row['Name'];
+        }
+
+        return $emissionsData;
+    }
+    else {
+        echo "No activities found or query failed.";
+    }
+}
+
+function ReturnWeeklyEmissions()
+{
+    $db = dbConnect();
+
+    $emissionsData = [];
+    $today = (new DateTime('now'))->format('Y-m-d');
+    $weekAgo= (new DateTime('6 days ago'))->format('Y-m-d');
+
+    // retrieve database values
+    $stmt = $db->prepare("
+            SELECT SUM(AL.Calculated_Emissions) AS Total_Emissions, AL.Activity_Date
+            FROM Activity_Log AL
+            INNER JOIN User U ON AL.User_ID = U.User_ID
+            INNER JOIN Emission_Category C ON AL.Category_ID = C.Category_ID
+            WHERE U.User_ID = :user_id
+            AND (
+                substr(Activity_Date, 7, 4) || '-' || substr(Activity_Date, 4, 2) || '-' || substr(Activity_Date, 1, 2)
+            ) BETWEEN :week_ago AND :today
+            GROUP BY AL.Activity_Date
+            ORDER BY AL.Activity_Date ASC
+        ");
+    $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+    $stmt->bindValue(':week_ago', $weekAgo, SQLITE3_TEXT);
+    $stmt->bindValue(':today', $today, SQLITE3_TEXT);
+    $results = $stmt->execute();
+
+    $weekArray = [];
+    while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
+        $weekArray[$row['Activity_Date']] = $row['Total_Emissions'];
+    }
+
+    // fill in gaps from the select statement, defaulting to 0 emissions for days with no entries
+    for ($i = 6; $i >= 0; $i--) {
+        $date = (new DateTime("$i days ago"))->format('d-m-Y');
+        $emissionsData[] = $weekArray[$date] ?? 0;
+    }
+
+    return $emissionsData;
+}
+function ReturnWeekDays()
+{
+    $today = (new DateTime('now'))->format('d-m-Y');
+
+    $weekdays = [];
+    for ($i = 6; $i >= 0; $i--) {
+        $weekdays[] = (new DateTime("$i days ago"))->format('D');
+    }
+
+    return $weekdays;
+}
+
+
+function ReturnMonthlyEmissions()
+{
+    $db = dbConnect();
+
+    $emissionsData = [];
+    $today = (new DateTime('now'))->format('Y-m-d');
+    $yearAgo= (new DateTime('first day of 11 months ago'))->format('Y-m-d');
+
+    // retrieve database values
+    $stmt = $db->prepare("
+            SELECT SUM(AL.Calculated_Emissions) AS Total_Emissions, substr(AL.Activity_Date, 4, 7) AS Month_Year
+            FROM Activity_Log AL
+            INNER JOIN User U ON AL.User_ID = U.User_ID
+            INNER JOIN Emission_Category C ON AL.Category_ID = C.Category_ID
+            WHERE U.User_ID = :user_id
+            AND (
+                substr(Activity_Date, 7, 4) || '-' || substr(Activity_Date, 4, 2) || '-' || substr(Activity_Date, 1, 2)
+            ) BETWEEN :year_ago AND :today
+            GROUP BY Month_Year
+        ");
+    $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+    $stmt->bindValue(':year_ago', $yearAgo, SQLITE3_TEXT);
+    $stmt->bindValue(':today', $today, SQLITE3_TEXT);
+    $results = $stmt->execute();
+
+    $monthArray = [];
+    while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
+        $monthArray[$row['Month_Year']] = $row['Total_Emissions'];
+    }
+
+    // fill in gaps from the select statement, defaulting to 0 emissions for months with no entries
+    for ($i = 11; $i >= 0; $i--) {
+        $date = (new DateTime("first day of $i months ago"))->format('m-Y');
+        $emissionsData[] = $monthArray[$date] ?? 0;
+    }
+
+    return $emissionsData;
+}
+function ReturnMonths()
+{
+    $today = (new DateTime('now'))->format('M');
+
+    $months = [];
+    for ($i = 11; $i >= 0; $i--) {
+        $date = (new DateTime("first day of $i months ago"))->format('M');
+        $months[] = $date;
+    }
+
+    return $months;
 }
 
 
@@ -313,108 +701,110 @@ function DisplayActivityLog()
 
 function DisplayThisMonthsActivities($selected_month_datetime)
 {
-  $db = dbConnect();
-  $month = $selected_month_datetime->format('m-Y');
+    $db = dbConnect();
+    $month = $selected_month_datetime->format('m-Y');
 
-  // retrieve database values
-  $stmt = $db->prepare("
-          SELECT AL.*, U.Username, C.Name, C.Unit, C.Emission_Unit
-          FROM Activity_Log AL
-          INNER JOIN User U ON AL.User_ID = U.User_ID
-          INNER JOIN Emission_Category C ON AL.Category_ID = C.Category_ID
-          WHERE U.User_ID = :user_id 
-          AND substr(Activity_Date, 4, 7) = :selected_month
-          ORDER BY AL.Activity_Date ASC
-      ");
-  $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
-  $stmt->bindValue(':selected_month', $month, SQLITE3_TEXT);
-  $results = $stmt->execute();
+    // retrieve database values
+    $stmt = $db->prepare("
+            SELECT AL.*, U.Username, C.Name, C.Unit, C.Emission_Unit
+            FROM Activity_Log AL
+            INNER JOIN User U ON AL.User_ID = U.User_ID
+            INNER JOIN Emission_Category C ON AL.Category_ID = C.Category_ID
+            WHERE U.User_ID = :user_id 
+            AND substr(Activity_Date, 4, 7) = :selected_month
+            ORDER BY AL.Activity_Date ASC
+        ");
+    $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+    $stmt->bindValue(':selected_month', $month, SQLITE3_TEXT);
+    $results = $stmt->execute();
 
-  if ($results) {
+    if ($results) {
     $lastDate = "";
     echo "
-          <table class='activities-table'>
-          <tr>
-              <th>Date</th>
-              <th>Category</th>
-              <th>Value</th>
-              <th>Notes</th>
-              <th>CO2 Emissions</th>
-              <th>Actions</th>
-          </tr>";
+            <table class='activities-table'>
+            <tr>
+                <th>Date</th>
+                <th>Category</th>
+                <th>Value</th>
+                <th>Notes</th>
+                <th>CO2 Emissions</th>
+                <th>Actions</th>
+            </tr>";
     
     // display table contents
     while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
-      $currentDate = $row['Activity_Date'];
-      $dateTime = DateTime::createFromFormat('d-m-Y', $currentDate);
-      $dateFormatted = $dateTime->format('jS');
+        $currentDate = $row['Activity_Date'];
+        $dateTime = DateTime::createFromFormat('d-m-Y', $currentDate);
+        $dateFormatted = $dateTime->format('jS');
 
-      if ($currentDate !== $lastDate) {
+        if ($currentDate !== $lastDate) {
         echo "
-                  <tr></tr>
-                  <tr></tr>
-                  <tr></tr>
-                  <tr class='date-break'>
-                      <td colspan='6'><p>" . $dateFormatted . "</p></td>
-                  </tr>";
+                    <tr></tr>
+                    <tr></tr>
+                    <tr></tr>
+                    <tr class='date-break'>
+                        <td colspan='6'><p>" . $dateFormatted . "</p></td>
+                    </tr>";
         $lastDate = $currentDate;
-      }
+        }
 
-      $logId = $row['Log_ID'];
-      $escapedNotes = htmlspecialchars($row['Notes'], ENT_QUOTES);
-      $escapedValue = htmlspecialchars($row['Value'], ENT_QUOTES);
-      $escapedDate  = htmlspecialchars($row['Activity_Date'], ENT_QUOTES);
-      $dateForEditInput = $dateTime->format('Y-m-d');
+        $logId = $row['Log_ID'];
+        $escapedNotes = htmlspecialchars($row['Notes'], ENT_QUOTES);
+        $escapedValue = htmlspecialchars($row['Value'], ENT_QUOTES);
+        $escapedDate  = htmlspecialchars($row['Activity_Date'], ENT_QUOTES);
+        $dateForEditInput = $dateTime->format('Y-m-d');
 
-      echo "
-              <tr id='row-{$logId}'>
-                  <td>{$row['Activity_Date']}</td>
-                  <td>{$row['Name']}</td>
-                  <td>{$row['Value']} {$row['Unit']}</td>
-                  <td>{$row['Notes']}</td>
-                  <td>{$row['Calculated_Emissions']} {$row['Emission_Unit']}</td>
-                  <td class='action-buttons'>
-                      <button onclick='openEditModal({$logId}, \"{$dateForEditInput}\", \"{$escapedValue}\", \"{$escapedNotes}\")' class='edit-delete-button'>Edit</button>
-                      <button onclick='confirmDelete({$logId})' class='edit-delete-button'>Delete</button>
-                  </td>
-              </tr>";
+
+        echo "
+                <tr id='row-{$logId}'>
+                    <td>{$row['Activity_Date']}</td>
+                    <td>{$row['Name']}</td>
+                    <td>{$row['Value']} {$row['Unit']}</td>
+                    <td>{$row['Notes']}</td>
+                    <td>{$row['Calculated_Emissions']} {$row['Emission_Unit']}</td>
+                    <td class='action-buttons'>
+                        <button onclick='openEditModal({$logId}, \"{$dateForEditInput}\", \"{$escapedValue}\", \"{$escapedNotes}\")' class='edit-delete-button'>Edit</button>
+                        <button onclick='confirmDelete({$logId})' class='edit-delete-button'>Delete</button>
+                    </td>
+                </tr>";
     }
     echo "</table>";
 
     // edit activity modal
     echo "<div class='add-activity-btn-container'><button onclick='openAddModal()' class='add-activity-btn'>+ Add Activity</button></div>";
     echo "
-          <div id='editModal' style='display:none;' class='activity-modal-overlay'>
-              <div class='modal-content edit-modal'>
-                  <p style='text-align: center; font-family: \"Glacial Indifference Bold\"; font-size: 22px; margin: 0;'>Edit Activity</p>
-                  <form method='POST' style='margin-top: -60px'>
-                      <input type='hidden' name='action' value='edit_activity'><br><br>
-                      <input type='hidden' name='log_id' id='edit_log_id'><br><br>
-                      <label>Date: <input type='date' name='activity_date' id='edit_date' class='date-input'></label><br><br>
-                      <label>Value: <input type='number' step='0.05' value='0' name='value' id='edit_value'></label><br><br>
-                      <label>Notes: <input type='text' name='notes' id='edit_notes'></label><br><br>
-                      <div class='button-group'>
-                          <button type='submit' class='modal-button'>Save</button>
-                          <button type='button' onclick='closeModal(\"editModal\")' class='modal-button'>Cancel</button>
-                      </div>
-                  </form>
-              </div>
-          </div>";
+            <div id='editModal' style='display:none;' class='activity-modal-overlay'>
+                <div class='modal-content edit-modal'>
+                    <p style='text-align: center; font-family: \"Glacial Indifference Bold\"; font-size: 22px; margin: 0;'>Edit Activity</p>
+                    <form method='POST' style='margin-top: -60px'>
+                        <input type='hidden' name='action' value='edit_activity'><br><br>
+                        <input type='hidden' name='log_id' id='edit_log_id'><br><br>
+                        <label>Date: <input type='date' name='activity_date' id='edit_date' class='date-input'></label><br><br>
+                        <label>Value: <input type='number' step='0.05' value='0' name='value' id='edit_value'></label><br><br>
+                        <label>Notes: <input type='text' name='notes' id='edit_notes'></label><br><br>
+                        <div class='button-group'>
+                            <button type='submit' class='modal-button'>Save</button>
+                            <button type='button' onclick='closeModal(\"editModal\")' class='modal-button'>Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>";
 
     // add activity modal
     $db2 = dbConnect();
     $cats = $db2->query("SELECT Category_ID, Name, Unit FROM Emission_Category ORDER BY Name ASC");
     $categoryOptions = "";
     while ($cat = $cats->fetchArray(SQLITE3_ASSOC)) {
-      $categoryOptions .= "<option value='{$cat['Category_ID']}'>{$cat['Name']} ({$cat['Unit']})</option>";
+        $categoryOptions .= "<option value='{$cat['Category_ID']}'>{$cat['Name']} ({$cat['Unit']})</option>";
     }
+    $today = (new DateTime('now'))->format('Y-m-d');
 
     echo "
         <div id='addModal' class='activity-modal-overlay' style='display:none;'>
             <div class='modal-content add-modal'>
                 <p style='text-align: center; font-family: \"Glacial Indifference Bold\"; font-size: 22px; margin: 0;'>Add Activity</p>
                 <form method='POST'> <input type='hidden' name='action' value='add_activity'><br><br>
-                    <label>Date: <input type='date' class='date-input' name='activity_date'></label><br><br>
+                    <label>Date: <input type='date' class='date-input' name='activity_date' value={$today}></label><br><br>
                     <label>Category: <select name='category_id'> {$categoryOptions} </select> </label><br><br>
                     <label>Value: <input type='number' step='0.05' value='0' name='value' id='edit_value'></label><br><br>
                     <label>Notes: <input type='text' name='notes'></label><br><br><br>
@@ -428,25 +818,24 @@ function DisplayThisMonthsActivities($selected_month_datetime)
 
     // delete activity modal
     echo "
-          <div id='deleteModal' style='display:none;' class='activity-modal-overlay'>
-              <div class='modal-content delete-modal'>
-                  <p>Are you sure you want to delete this activity?</p>
-                  <form method='POST'>
-                      <input type='hidden' name='action' value='delete_activity'>
-                      <input type='hidden' name='log_id' id='delete_log_id'>
-                      <div class='button-group'>
-                          <button type='submit' class='modal-button'>Yes, delete</button>
-                          <button type='button' onclick='closeModal(\"deleteModal\")' class='modal-button'>Cancel</button>
-                      </div>
-                  </form>
-              </div>
-          </div>";
+            <div id='deleteModal' style='display:none;' class='activity-modal-overlay'>
+                <div class='modal-content delete-modal'>
+                    <p>Are you sure you want to delete this activity?</p>
+                    <form method='POST'>
+                        <input type='hidden' name='action' value='delete_activity'>
+                        <input type='hidden' name='log_id' id='delete_log_id'>
+                        <div class='button-group'>
+                            <button type='submit' class='modal-button'>Yes, delete</button>
+                            <button type='button' onclick='closeModal(\"deleteModal\")' class='modal-button'>Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>";
 
-  } else {
-    echo "No activities found or query failed.";
-  }
+    }
+    else {
+        echo "No activities found or query failed.";
+    }
 }
 
-
-
-
+?>

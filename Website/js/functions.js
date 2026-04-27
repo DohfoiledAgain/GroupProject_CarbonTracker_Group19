@@ -32,3 +32,41 @@ window.onclick = function (e) {
         if (e.target === m) m.style.display = 'none';
     });
 }
+
+
+// ------------ Dashboard Functions
+let currentIndex = 0;
+function cycleRecommendation() {
+    const recommendationsSpan = document.getElementById('recommendation-text');
+
+    if (recommendations !== null && recommendations.length > 0) {
+
+        recommendationsSpan.innerHTML = recommendations[currentIndex];
+        currentIndex = (currentIndex + 1) % recommendations.length;
+
+    } else {
+        recommendationsSpan.innerHTML = "No recommendations available for this week.";
+    }
+}
+window.onload = cycleRecommendation;
+
+function randomRecommendations() {
+    const recommendationsSpan = document.getElementById('recommendation-text');
+    recommendationsSpan.innerHTML = "";
+
+    if (allRecommendations !== null && allRecommendations.length > 0) {
+
+        let tempRecsArray = [...allRecommendations];
+
+        for (let i = 0; i < 5; i++) {
+
+            // pick out a random recommendation and remove it from the temp array to avoid duplicates
+            randIndex = Math.floor(Math.random() * tempRecsArray.length);
+            let pickedRec = tempRecsArray.splice(randIndex, 1)[0];
+            recommendationsSpan.innerHTML += "<li>" + pickedRec + "</li>";
+
+        }
+    } else {
+        recommendationsSpan.innerHTML = "Failed to retrieve random recommendations.";
+    }
+}
