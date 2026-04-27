@@ -70,3 +70,15 @@ function randomRecommendations() {
         recommendationsSpan.innerHTML = "Failed to retrieve random recommendations.";
     }
 }
+
+
+// ------------ Other Functions
+function closeTC() {
+    const overlay = document.getElementById('tc-overlay');
+    if (overlay) {
+        overlay.style.display = 'none';
+    }
+
+    const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+    window.history.pushState({ path: newUrl }, '', newUrl);
+}
