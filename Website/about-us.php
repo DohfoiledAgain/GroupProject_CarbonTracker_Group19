@@ -47,11 +47,8 @@
             <p style="font-size: 20px;">A recent article discussing the UK's plans to reach net zero by 2050, detailing progress that has already been made and progress that is planned to be made in the near future.<br></p>
         </div>
     </div>
-
-    <div>
-        <p style="font-size: 16px; text-align: center; margin-top: 120px;">Copyright © 2026 CO2 Tracker. All rights reserved.</p>
-     </div>
     
-    <script src="functions.js"></script>
-</body>
-</html>
+    
+    <?php
+      include("components/footer.php");
+    ?>

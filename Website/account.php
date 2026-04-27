@@ -50,5 +50,6 @@
         <br><br>
 
     </div>
-</body>
-</html>
+    <?php
+      include("components/footer.php");
+    ?>

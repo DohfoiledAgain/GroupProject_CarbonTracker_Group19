@@ -3,14 +3,13 @@
   <?php
   include("components/head.php");
   ?>
+  <?php if ($user): ?>
 
     <!-- body -->
     <div class="welcome-container">
         <h1>Dashboard</h1>
         <p>Your CO2 stats</p>
     </div>
-
-    <br><br><br>
 
 
     <div class="dashboard-container">
@@ -49,7 +48,7 @@
 
 
         <!-- pie chart -->
-        <div class="chart-container" style="width:450px !important;">
+        <div class="chart-container"">
             <h2 class="dashboard-title">Total Emissions by Category</h2>
             <canvas id="chartCategories"></canvas>
         </div>
@@ -217,10 +216,8 @@
 
     </script>
 
+    <?php endif; ?>
     <?php
       include("components/loginprompt.php");
+      include("components/footer.php");
     ?>
-    <script src="js/functions.js"></script>
-
-</body>
-</html>

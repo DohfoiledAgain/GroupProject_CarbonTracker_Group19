@@ -6,7 +6,8 @@
 
     <!-- body -->
     <div class="welcome-container">
-        <h1 style="font-size: 40px; margin-bottom: -15px;">Activity Log</h1><br><br>
+        <h1>Activity Log</h1>
+        <p>Track your activity</p>
     </div>
 
     
@@ -19,11 +20,8 @@
     <script>
           
     </script>
-    <script src="js/functions.js"></script>
 
     <?php
       include("components/loginprompt.php");
+      include("components/footer.php");
     ?>
-
-</body>
-</html>

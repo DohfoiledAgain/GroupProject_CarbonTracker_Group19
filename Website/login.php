@@ -106,9 +106,6 @@
     </div>
 
     <?php
-        checkTC();
+      checkTC();
+      include("components/footer.php");
     ?>
-  <script src="js/login.js"></script>
-
-</body>
-</html>

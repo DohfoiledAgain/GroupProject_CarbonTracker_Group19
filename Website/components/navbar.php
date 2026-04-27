@@ -47,5 +47,3 @@
     // space for navbar js
 
 </script>
-
-<br><br><br>
