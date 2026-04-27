@@ -520,7 +520,6 @@ table tr {
     left: 0px; 
     position: absolute; 
     top: 0px; 
-    z-index: -1;
 }
 
 .sign-up-in-left-container {
