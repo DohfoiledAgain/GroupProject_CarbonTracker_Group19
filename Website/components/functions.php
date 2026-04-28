@@ -914,7 +914,7 @@ function DisplayThisMonthsActivities($selected_month_datetime)
 }
 
 
-/* ------------------ Activity log functions */
+/* ------------------ Admin user table functions */
 
 function DisplayAllUsers()
 {

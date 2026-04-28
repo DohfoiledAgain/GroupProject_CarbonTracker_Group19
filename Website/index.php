@@ -48,7 +48,7 @@
 
 
         <!-- pie chart -->
-        <div class="chart-container"">
+        <div class="chart-container">
             <h2 class="dashboard-title">Total Emissions by Category</h2>
             <canvas id="chartCategories"></canvas>
         </div>
