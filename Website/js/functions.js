@@ -106,3 +106,20 @@ function closeTC() {
     const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
     window.history.pushState({ path: newUrl }, '', newUrl);
 }
+
+//------------ Admin Analytics Toggle Function
+function toggleAdminAnalytics() {
+    const content = document.getElementById('adminAnalyticsContent');
+    const icon = document.getElementById('adminAnalyticsIcon');
+    const button = document.getElementById('adminAnalyticsToggle');
+
+    if (!content || !icon || !button) {
+        return;
+    }
+
+    const isHidden = content.style.display === 'none';
+
+    content.style.display = isHidden ? 'block' : 'none';
+    icon.textContent = isHidden ? '▲' : '▼';
+    button.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+}

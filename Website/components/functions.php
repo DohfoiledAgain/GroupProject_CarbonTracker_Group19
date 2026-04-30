@@ -1213,7 +1213,11 @@ function DisplayAdminAnalytics()
     $analytics = ReturnAdminAnalytics();
 
     echo "<div class='admin-analytics-container'>";
-    echo "<h2 class='dashboard-title'>Platform Analytics</h2>";
+    echo "<button type='button' class='admin-analytics-toggle' onclick='toggleAdminAnalytics()' aria-expanded='true' id='adminAnalyticsToggle'>";
+    echo "<span>Platform Analytics</span>";
+    echo "<span id='adminAnalyticsIcon'>▲</span>";
+    echo "</button>";
+    echo "<div id='adminAnalyticsContent'>";
 
     echo "<div class='admin-analytics-grid'>";
 
@@ -1263,6 +1267,7 @@ function DisplayAdminAnalytics()
     }
     echo "</div>";
 
+    echo "</div>";
     echo "</div>";
     echo "</div>";
 }
