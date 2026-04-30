@@ -1012,5 +1012,149 @@ function DisplayAllUsers()
     }
 }
 
+/* ------------------------------------------------------------------Monthly carbon Insights */
+
+function ReturnMonthlyCarbonInsights()
+{
+    $db = dbConnect();
+    $currentMonth = (new DateTime('now'))->format('m-Y');
+    $currentDay = (int)(new DateTime('now'))->format('j');
+
+    $stmt = $db->prepare("
+        SELECT SUM(Calculated_Emissions) AS Monthly_Total
+        FROM Activity_Log
+        WHERE User_ID = :user_id
+        AND substr(Activity_Date, 4, 7) = :current_month
+    ");
+    $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+    $stmt->bindValue(':current_month', $currentMonth, SQLITE3_TEXT);
+    $result = $stmt->execute();
+    $monthlyRow = $result->fetchArray(SQLITE3_ASSOC);
+
+    $monthlyTotal = $monthlyRow['Monthly_Total'] ?? 0;
+    $dailyAverage = $currentDay > 0 ? $monthlyTotal / $currentDay : 0;
+    $estimatedAnnual = $dailyAverage * 365;
+
+    $categoryStmt = $db->prepare("
+        SELECT C.Name, SUM(AL.Calculated_Emissions) AS Category_Total
+        FROM Activity_Log AL
+        INNER JOIN Emission_Category C ON AL.Category_ID = C.Category_ID
+        WHERE AL.User_ID = :user_id
+        AND substr(AL.Activity_Date, 4, 7) = :current_month
+        GROUP BY C.Name
+        ORDER BY Category_Total DESC
+        LIMIT 1
+    ");
+    $categoryStmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+    $categoryStmt->bindValue(':current_month', $currentMonth, SQLITE3_TEXT);
+    $categoryResult = $categoryStmt->execute();
+    $categoryRow = $categoryResult->fetchArray(SQLITE3_ASSOC);
+
+    $topCategory = $categoryRow['Name'] ?? "No activity recorded";
+    $topCategoryTotal = $categoryRow['Category_Total'] ?? 0;
+
+    $activityStmt = $db->prepare("
+        SELECT AL.Activity_Date, AL.Value, AL.Calculated_Emissions, C.Name, C.Unit, C.Emission_Unit
+        FROM Activity_Log AL
+        INNER JOIN Emission_Category C ON AL.Category_ID = C.Category_ID
+        WHERE AL.User_ID = :user_id
+        AND substr(AL.Activity_Date, 4, 7) = :current_month
+        ORDER BY AL.Calculated_Emissions DESC
+        LIMIT 1
+    ");
+    $activityStmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+    $activityStmt->bindValue(':current_month', $currentMonth, SQLITE3_TEXT);
+    $activityResult = $activityStmt->execute();
+    $activityRow = $activityResult->fetchArray(SQLITE3_ASSOC);
+
+    $suggestion = ReturnMonthlyFocusSuggestion($topCategory);
+
+    return [
+        'monthly_total' => round($monthlyTotal, 2),
+        'daily_average' => round($dailyAverage, 2),
+        'estimated_annual' => round($estimatedAnnual, 2),
+        'top_category' => $topCategory,
+        'top_category_total' => round($topCategoryTotal, 2),
+        'biggest_activity' => $activityRow,
+        'suggestion' => $suggestion
+    ];
+}
+
+function ReturnMonthlyFocusSuggestion($categoryName)
+{
+    switch ($categoryName) {
+        case 'Electricity (grid)':
+            return "Electricity is your highest source this month. Try switching off unused devices and reducing unnecessary appliance use.";
+        case 'Gas usage':
+            return "Gas is your highest source this month. Try reducing heating time, lowering thermostat settings, or improving insulation habits.";
+        case 'Water usage':
+            return "Water is your highest source this month. Try reducing shower time and avoiding unnecessary hot water use.";
+        case 'Car travel':
+            return "Car travel is your highest source this month. Try walking, cycling, car sharing, or using public transport for shorter journeys.";
+        case 'Bus travel':
+            return "Bus travel is your highest source this month. Consider combining journeys where possible and reviewing travel frequency.";
+        case 'Coach travel':
+            return "Coach travel is your highest source this month. Review long-distance travel patterns and combine trips where possible.";
+        case 'Train travel (UK)':
+            return "Train travel is your highest source this month. Review journey frequency and combine trips where possible.";
+        default:
+            return "Start logging activities to receive personalised monthly carbon insights.";
+    }
+}
+
+function DisplayMonthlyCarbonInsights()
+{
+    if (!isset($_SESSION['user_id'])) {
+        return;
+    }
+
+    $insights = ReturnMonthlyCarbonInsights();
+    $biggestActivity = $insights['biggest_activity'];
+
+    echo "<div class='monthly-insights-container'>";
+    echo "<h2 class='dashboard-title'>Monthly Carbon Insights</h2>";
+
+    echo "<div class='insight-grid'>";
+
+    echo "<div class='insight-card'>";
+    echo "<span class='insight-label'>This month</span>";
+    echo "<strong>" . htmlspecialchars($insights['monthly_total']) . " kgCO₂e</strong>";
+    echo "<p>Total emissions recorded this month</p>";
+    echo "</div>";
+
+    echo "<div class='insight-card'>";
+    echo "<span class='insight-label'>Daily average</span>";
+    echo "<strong>" . htmlspecialchars($insights['daily_average']) . " kgCO₂e</strong>";
+    echo "<p>Average emissions per day this month</p>";
+    echo "</div>";
+
+    echo "<div class='insight-card'>";
+    echo "<span class='insight-label'>Annual estimate</span>";
+    echo "<strong>" . htmlspecialchars($insights['estimated_annual']) . " kgCO₂e</strong>";
+    echo "<p>Estimated yearly footprint at current pace</p>";
+    echo "</div>";
+
+    echo "<div class='insight-card'>";
+    echo "<span class='insight-label'>Highest category</span>";
+    echo "<strong>" . htmlspecialchars(ReturnStyledCategoryName($insights['top_category']) ?? $insights['top_category']) . "</strong>";
+    echo "<p>" . htmlspecialchars($insights['top_category_total']) . " kgCO₂e this month</p>";
+    echo "</div>";
+
+    echo "</div>";
+
+    if ($biggestActivity) {
+        echo "<div class='insight-highlight'>";
+        echo "<h3>Biggest Single Activity</h3>";
+        echo "<p><strong>" . htmlspecialchars($biggestActivity['Name']) . "</strong> on " . htmlspecialchars($biggestActivity['Activity_Date']) . " produced <strong>" . round($biggestActivity['Calculated_Emissions'], 2) . " " . htmlspecialchars($biggestActivity['Emission_Unit']) . "</strong>.</p>";
+        echo "</div>";
+    }
+
+    echo "<div class='insight-suggestion'>";
+    echo "<h3>Monthly Focus Suggestion</h3>";
+    echo "<p>" . htmlspecialchars($insights['suggestion']) . "</p>";
+    echo "</div>";
+
+    echo "</div>";
+}
 
 ?>

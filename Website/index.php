@@ -61,6 +61,14 @@
             DisplayTotalEmissions()
             ?>
         </div>
+
+        <!-- total monthly insights wrapper -->
+
+        <div class="monthly-insights-wrapper">
+        <?php
+        DisplayMonthlyCarbonInsights();
+        ?>
+    </div>
         
 
     </div>
