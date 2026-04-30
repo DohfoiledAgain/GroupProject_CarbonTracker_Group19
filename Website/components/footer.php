@@ -1,8 +1,17 @@
-    
+<script src="js/functions.js"></script>
 
-    
-    
-    <script src="js/functions.js"></script>
+<?php
+$currentPage = basename($_SERVER['PHP_SELF']);
+$allowedPages = ['index.php', 'admin.php', 'about-us.php'];
+
+if (in_array($currentPage, $allowedPages)) {
+    echo '
+    <button id="backToTopBtn" class="back-to-top-btn" onclick="scrollToTop()" aria-label="Back to top">
+        ↑
+    </button>
+    ';
+}
+?>
 
 </body>
 <footer>

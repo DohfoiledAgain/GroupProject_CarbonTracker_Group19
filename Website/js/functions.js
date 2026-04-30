@@ -157,3 +157,25 @@ function toggleAdminLeaderboard() {
     icon.textContent = isHidden ? '▲' : '▼';
     button.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
 }
+
+//---Back to Top Navigation Button--//
+window.addEventListener('scroll', function () {
+    const button = document.getElementById('backToTopBtn');
+
+    if (!button) {
+        return;
+    }
+
+    if (window.scrollY > 300) {
+        button.classList.add('show-back-to-top');
+    } else {
+        button.classList.remove('show-back-to-top');
+    }
+});
+
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+    });
+}
