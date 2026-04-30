@@ -123,3 +123,20 @@ function toggleAdminAnalytics() {
     icon.textContent = isHidden ? '▲' : '▼';
     button.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
 }
+
+//---Carbon Reduction Goal Toggle--//
+function toggleCarbonGoal() {
+    const content = document.getElementById('carbonGoalContent');
+    const icon = document.getElementById('carbonGoalIcon');
+    const button = document.getElementById('carbonGoalToggle');
+
+    if (!content || !icon || !button) {
+        return;
+    }
+
+    const isHidden = content.style.display === 'none';
+
+    content.style.display = isHidden ? 'block' : 'none';
+    icon.textContent = isHidden ? '▲' : '▼';
+    button.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+}

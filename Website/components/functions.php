@@ -1272,4 +1272,99 @@ function DisplayAdminAnalytics()
     echo "</div>";
 }
 
+/*Carbon Reduction Goals */ 
+
+function ReturnCarbonGoalProgress()
+{
+    $monthlyTarget = 100;
+    $db = dbConnect();
+    $currentMonth = (new DateTime('now'))->format('m-Y');
+
+    $stmt = $db->prepare("
+        SELECT SUM(Calculated_Emissions) AS Monthly_Total
+        FROM Activity_Log
+        WHERE User_ID = :user_id
+        AND substr(Activity_Date, 4, 7) = :current_month
+    ");
+    $stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+    $stmt->bindValue(':current_month', $currentMonth, SQLITE3_TEXT);
+
+    $result = $stmt->execute();
+    $row = $result->fetchArray(SQLITE3_ASSOC);
+
+    $monthlyTotal = $row['Monthly_Total'] ?? 0;
+    $percentageUsed = $monthlyTarget > 0 ? ($monthlyTotal / $monthlyTarget) * 100 : 0;
+    $remaining = $monthlyTarget - $monthlyTotal;
+
+    if ($percentageUsed < 60) {
+        $status = "On Track";
+        $message = "You are currently well within your monthly carbon target. Keep logging activities to maintain your progress.";
+        $statusClass = "goal-good";
+    } elseif ($percentageUsed <= 100) {
+        $status = "Close to Target";
+        $message = "You are approaching your monthly carbon target. Review your highest categories and reduce unnecessary high-emission activities.";
+        $statusClass = "goal-warning";
+    } else {
+        $status = "Over Target";
+        $message = "You have exceeded your monthly carbon target. Focus on reducing your highest emission source and consider lower-carbon alternatives.";
+        $statusClass = "goal-danger";
+    }
+
+    return [
+        'target' => round($monthlyTarget, 2),
+        'monthly_total' => round($monthlyTotal, 2),
+        'percentage_used' => round($percentageUsed, 1),
+        'remaining' => round($remaining, 2),
+        'status' => $status,
+        'message' => $message,
+        'status_class' => $statusClass
+    ];
+}
+
+function DisplayCarbonGoalTracker()
+{
+    if (!isset($_SESSION['user_id'])) {
+        return;
+    }
+
+    $goal = ReturnCarbonGoalProgress();
+    $progressWidth = min($goal['percentage_used'], 100);
+
+    echo "<div class='carbon-goal-container'>";
+    echo "<button type='button' class='carbon-goal-toggle' onclick='toggleCarbonGoal()' aria-expanded='true' id='carbonGoalToggle'>";
+    echo "<span>Carbon Reduction Goal</span>";
+    echo "<span id='carbonGoalIcon'>▲</span>";
+    echo "</button>";
+
+    echo "<div id='carbonGoalContent'>";
+    echo "<div class='carbon-goal-layout'>";
+
+    echo "<div class='carbon-goal-main'>";
+    echo "<span class='goal-status " . htmlspecialchars($goal['status_class']) . "'>" . htmlspecialchars($goal['status']) . "</span>";
+    echo "<h3>" . htmlspecialchars($goal['monthly_total']) . " kgCO₂e used</h3>";
+    echo "<p>Monthly target: <strong>" . htmlspecialchars($goal['target']) . " kgCO₂e</strong></p>";
+
+    echo "<div class='goal-progress-track'>";
+    echo "<div class='goal-progress-fill " . htmlspecialchars($goal['status_class']) . "' style='width:" . htmlspecialchars($progressWidth) . "%'></div>";
+    echo "</div>";
+
+    echo "<p class='goal-progress-text'>" . htmlspecialchars($goal['percentage_used']) . "% of monthly target used</p>";
+    echo "</div>";
+
+    echo "<div class='carbon-goal-side'>";
+    if ($goal['remaining'] >= 0) {
+        echo "<h3>" . htmlspecialchars($goal['remaining']) . " kgCO₂e remaining</h3>";
+    } else {
+        echo "<h3>" . htmlspecialchars(abs($goal['remaining'])) . " kgCO₂e over target</h3>";
+    }
+    echo "<p>" . htmlspecialchars($goal['message']) . "</p>";
+    echo "</div>";
+
+    echo "</div>";
+    echo "</div>";
+    echo "</div>";
+}
+
+
+
 ?>

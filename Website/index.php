@@ -69,6 +69,13 @@
         DisplayMonthlyCarbonInsights();
         ?>
     </div>
+
+    <!-- carbon goal tracker -->
+    <div class="carbon-goal-wrapper">
+        <?php
+        DisplayCarbonGoalTracker();
+        ?>
+    </div>
         
 
     </div>
