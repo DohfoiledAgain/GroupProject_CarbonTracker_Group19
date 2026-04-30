@@ -741,10 +741,10 @@ function DisplayActivityLog()
   }
   // determine current month and selected month
   $current_month_datetime = new DateTime('first day of this month 00:00:00');
-  $current_m_y = $current_month_datetime->format('m-y');
+  $current_m_y = $current_month_datetime->format('m-Y');
 
   $selected_month_param = isset($_GET['date']) ? $_GET['date'] : $current_m_y;
-  $selected_month_datetime = DateTime::createFromFormat('m-y', $selected_month_param);
+  $selected_month_datetime = DateTime::createFromFormat('d-m-Y', "01-" . $selected_month_param);
   $selected_month_datetime->modify('first day of this month 00:00:00');
 
   if ($selected_month_datetime > $current_month_datetime) {
@@ -752,8 +752,8 @@ function DisplayActivityLog()
     exit;
   }
 
-  $prev_month = (clone $selected_month_datetime)->modify('-1 month')->format('m-y');
-  $next_month = (clone $selected_month_datetime)->modify('+1 month')->format('m-y');
+  $prev_month = (clone $selected_month_datetime)->modify('-1 month')->format('m-Y');
+  $next_month = (clone $selected_month_datetime)->modify('+1 month')->format('m-Y');
 
   // display month title and navigation arrows
   echo "<div class='activity-month-select-container'>";
