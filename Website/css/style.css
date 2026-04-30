@@ -916,3 +916,120 @@ table tr {
         padding: 10px 15px 25px 15px;
     }
 }
+
+/*Accessibility Visual Improvements*/
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 3px solid var(--lighter-theme-colour);
+    outline-offset: 3px;
+}
+
+button,
+input[type="submit"] {
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+button:hover,
+input[type="submit"]:hover,
+.recommendation-button:hover,
+.edit-delete-button:hover,
+.add-activity-btn:hover,
+.modal-button:hover,
+.sign-in-button:hover,
+.sign-up-button:hover,
+.about-us-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-container,
+.activity-log-container,
+.admin-container {
+    max-width: 100%;
+}
+
+.activities-table,
+.dashboard-activities-table {
+    overflow-x: auto;
+}
+
+@media screen and (max-width: 900px) {
+    .dashboard-container {
+        padding: 0 15px;
+        margin-top: 120px;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .chart-container,
+    .dashboard-activity-log,
+    .recommendations-container,
+    .total-emissions-container,
+    .monthly-insights-container,
+    .carbon-goal-container,
+    .admin-analytics-container {
+        min-width: 0;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .activity-log-container,
+    .admin-container {
+        width: 95%;
+        overflow-x: auto;
+    }
+
+    .activities-table,
+    .dashboard-activities-table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    .activity-modal-overlay .modal-content {
+        width: min(90%, 500px);
+        padding: 30px 20px;
+    }
+
+    .welcome-container h1 {
+        font-size: 34px;
+    }
+
+    .welcome-container p {
+        font-size: 22px !important;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .dashboard-title,
+    .admin-analytics-toggle,
+    .carbon-goal-toggle {
+        font-size: 25px;
+    }
+
+    .recommendations-container {
+        padding: 15px 20px;
+    }
+
+    .activity-modal-overlay .modal-content {
+        width: 92%;
+    }
+
+    .modal-content input,
+    .modal-content select {
+        width: 100%;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .modal-button {
+        width: 100%;
+    }
+}

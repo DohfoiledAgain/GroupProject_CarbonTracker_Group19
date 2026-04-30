@@ -176,3 +176,31 @@ hr {
     transition: font-size 0.1s ease-in-out;
     cursor: pointer;
 }
+
+/*focus visuals*/
+.navbar a:focus-visible,
+.sidebar-items a:focus-visible,
+.menu-button:focus-visible,
+.close-button:focus-visible {
+    outline: 3px solid white;
+    outline-offset: 4px;
+    border-radius: 6px;
+}
+
+@media screen and (max-width: 700px) {
+    .navbar-logo a {
+        font-size: 28px !important;
+    }
+
+    .menu-button {
+        font-size: 23px;
+    }
+
+    .sidebar-container {
+        max-width: 85vw;
+    }
+
+    .sidebar-items a:not(.sidebar-logo) {
+        font-size: 22px;
+    }
+}
