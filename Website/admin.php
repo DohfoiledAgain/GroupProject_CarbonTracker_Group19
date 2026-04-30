@@ -18,9 +18,11 @@
 
     <div class="admin-container">
 
+        <?php DisplayAdminAnalytics(); ?>
+
         <p class="activity-month-header">All Users</p>
         <?php DisplayAllUsers(); ?>
-        
+    
     </div>
 
 

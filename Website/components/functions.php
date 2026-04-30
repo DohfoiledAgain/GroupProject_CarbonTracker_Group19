@@ -1157,4 +1157,114 @@ function DisplayMonthlyCarbonInsights()
     echo "</div>";
 }
 
+
+/*Admin Analytics Summary Card*/
+
+function ReturnAdminAnalytics()
+{
+    $db = dbConnect();
+
+    $usersResult = $db->querySingle("SELECT COUNT(*) FROM User");
+
+    $activitiesResult = $db->querySingle("SELECT COUNT(*) FROM Activity_Log");
+
+    $totalResult = $db->querySingle("
+        SELECT SUM(Calculated_Emissions)
+        FROM Activity_Log
+    ");
+
+    $highestUserResult = $db->query("
+        SELECT U.Username, SUM(AL.Calculated_Emissions) AS Total
+        FROM User U
+        LEFT JOIN Activity_Log AL ON U.User_ID = AL.User_ID
+        GROUP BY U.User_ID
+        ORDER BY Total DESC
+        LIMIT 1
+    ");
+    $highestUser = $highestUserResult->fetchArray(SQLITE3_ASSOC);
+
+    $categoryResult = $db->query("
+        SELECT C.Name, SUM(AL.Calculated_Emissions) AS Total
+        FROM Activity_Log AL
+        INNER JOIN Emission_Category C ON AL.Category_ID = C.Category_ID
+        GROUP BY C.Category_ID
+        ORDER BY Total DESC
+        LIMIT 1
+    ");
+    $topCategory = $categoryResult->fetchArray(SQLITE3_ASSOC);
+
+    $totalUsers = $usersResult ?: 0;
+    $totalActivities = $activitiesResult ?: 0;
+    $totalEmissions = $totalResult ?: 0;
+    $averagePerUser = $totalUsers > 0 ? $totalEmissions / $totalUsers : 0;
+
+    return [
+        'total_users' => $totalUsers,
+        'total_activities' => $totalActivities,
+        'total_emissions' => round($totalEmissions, 2),
+        'average_per_user' => round($averagePerUser, 2),
+        'highest_user' => $highestUser,
+        'top_category' => $topCategory
+    ];
+}
+
+function DisplayAdminAnalytics()
+{
+    $analytics = ReturnAdminAnalytics();
+
+    echo "<div class='admin-analytics-container'>";
+    echo "<h2 class='dashboard-title'>Platform Analytics</h2>";
+
+    echo "<div class='admin-analytics-grid'>";
+
+    echo "<div class='admin-analytics-card'>";
+    echo "<span>Total Users</span>";
+    echo "<strong>" . htmlspecialchars($analytics['total_users']) . "</strong>";
+    echo "<p>Registered accounts in the system</p>";
+    echo "</div>";
+
+    echo "<div class='admin-analytics-card'>";
+    echo "<span>Activity Records</span>";
+    echo "<strong>" . htmlspecialchars($analytics['total_activities']) . "</strong>";
+    echo "<p>Total activities logged by users</p>";
+    echo "</div>";
+
+    echo "<div class='admin-analytics-card'>";
+    echo "<span>Platform Emissions</span>";
+    echo "<strong>" . htmlspecialchars($analytics['total_emissions']) . " kgCO₂e</strong>";
+    echo "<p>Total recorded emissions</p>";
+    echo "</div>";
+
+    echo "<div class='admin-analytics-card'>";
+    echo "<span>Average Per User</span>";
+    echo "<strong>" . htmlspecialchars($analytics['average_per_user']) . " kgCO₂e</strong>";
+    echo "<p>Average emissions per account</p>";
+    echo "</div>";
+
+    echo "</div>";
+
+    echo "<div class='admin-highlight-grid'>";
+
+    echo "<div class='admin-highlight-card'>";
+    echo "<h3>Highest Emitting User</h3>";
+    if ($analytics['highest_user'] && $analytics['highest_user']['Username']) {
+        echo "<p><strong>" . htmlspecialchars($analytics['highest_user']['Username']) . "</strong> has recorded <strong>" . round($analytics['highest_user']['Total'], 2) . " kgCO₂e</strong>.</p>";
+    } else {
+        echo "<p>No user emissions recorded yet.</p>";
+    }
+    echo "</div>";
+
+    echo "<div class='admin-highlight-card'>";
+    echo "<h3>Highest Emission Category</h3>";
+    if ($analytics['top_category'] && $analytics['top_category']['Name']) {
+        echo "<p><strong>" . htmlspecialchars(ReturnStyledCategoryName($analytics['top_category']['Name'])) . "</strong> is the largest source with <strong>" . round($analytics['top_category']['Total'], 2) . " kgCO₂e</strong>.</p>";
+    } else {
+        echo "<p>No category emissions recorded yet.</p>";
+    }
+    echo "</div>";
+
+    echo "</div>";
+    echo "</div>";
+}
+
 ?>
