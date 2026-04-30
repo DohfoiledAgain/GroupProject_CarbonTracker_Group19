@@ -1012,7 +1012,7 @@ function DisplayAllUsers()
     }
 }
 
-/* ------------------------------------------------------------------Monthly carbon Insights */
+/* -------Monthly carbon Insights */
 
 function ReturnMonthlyCarbonInsights()
 {
@@ -1112,7 +1112,11 @@ function DisplayMonthlyCarbonInsights()
     $biggestActivity = $insights['biggest_activity'];
 
     echo "<div class='monthly-insights-container'>";
-    echo "<h2 class='dashboard-title'>Monthly Carbon Insights</h2>";
+    echo "<button type='button' class='monthly-insights-toggle' onclick='toggleMonthlyInsights()' aria-expanded='true' id='monthlyInsightsToggle'>";
+    echo "<span>Monthly Carbon Insights</span>";
+    echo "<span id='monthlyInsightsIcon'>▲</span>";
+    echo "</button>";
+    echo "<div id='monthlyInsightsContent'>";
 
     echo "<div class='insight-grid'>";
 
@@ -1155,10 +1159,11 @@ function DisplayMonthlyCarbonInsights()
     echo "</div>";
 
     echo "</div>";
+    echo "</div>";
 }
 
 
-/*Admin Analytics Summary Card*/
+/*Admin Analytics Summary Dashboard*/
 
 function ReturnAdminAnalytics()
 {

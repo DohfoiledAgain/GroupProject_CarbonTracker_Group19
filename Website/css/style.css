@@ -647,6 +647,39 @@ table tr {
     }
 }
 
+/*--Monthly Insights Toggle--*/
+.monthly-insights-toggle {
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    color: black;
+    font-family: 'Glacial Indifference Bold';
+    font-size: 30px;
+    text-align: left;
+    cursor: pointer;
+    padding: 12px 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 12px;
+    transition: background-color 0.2s ease, padding-left 0.2s ease;
+}
+
+.monthly-insights-toggle:hover {
+    background-color: #f5f8f4;
+    padding-left: 14px;
+}
+
+.monthly-insights-toggle:focus-visible {
+    outline: 3px solid var(--lighter-theme-colour);
+    outline-offset: 3px;
+}
+
+#monthlyInsightsIcon {
+    font-size: 22px;
+    color: var(--main-theme-colour);
+}
+
 /* ---- Admin Analytics Style Containers, Cards and Grids---- */
 
 .admin-analytics-container {

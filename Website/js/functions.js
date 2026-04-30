@@ -106,6 +106,22 @@ function closeTC() {
     const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
     window.history.pushState({ path: newUrl }, '', newUrl);
 }
+//------------ Monthly Carbon Insights Toggle Function
+function toggleMonthlyInsights() {
+    const content = document.getElementById('monthlyInsightsContent');
+    const icon = document.getElementById('monthlyInsightsIcon');
+    const button = document.getElementById('monthlyInsightsToggle');
+
+    if (!content || !icon || !button) {
+        return;
+    }
+
+    const isHidden = content.style.display === 'none';
+
+    content.style.display = isHidden ? 'block' : 'none';
+    icon.textContent = isHidden ? '▲' : '▼';
+    button.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+}
 
 //------------ Admin Analytics Toggle Function
 function toggleAdminAnalytics() {
