@@ -140,3 +140,20 @@ function toggleCarbonGoal() {
     icon.textContent = isHidden ? '▲' : '▼';
     button.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
 }
+
+//---Leaderboard Toggle--//
+function toggleAdminLeaderboard() {
+    const content = document.getElementById('adminLeaderboardContent');
+    const icon = document.getElementById('adminLeaderboardIcon');
+    const button = document.getElementById('adminLeaderboardToggle');
+
+    if (!content || !icon || !button) {
+        return;
+    }
+
+    const isHidden = content.style.display === 'none';
+
+    content.style.display = isHidden ? 'block' : 'none';
+    icon.textContent = isHidden ? '▲' : '▼';
+    button.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+}

@@ -1365,6 +1365,62 @@ function DisplayCarbonGoalTracker()
     echo "</div>";
 }
 
+/* ------------------TopEmittingUsersLeaderboard*/
+function DisplayAdminLeaderboard()
+{
+    $db = dbConnect();
 
+    $stmt = $db->prepare("
+        SELECT 
+            U.Username,
+            U.Email,
+            U.Num_Of_Household_Members,
+            SUM(AL.Calculated_Emissions) AS Total_Emissions
+        FROM User U
+        LEFT JOIN Activity_Log AL ON U.User_ID = AL.User_ID
+        GROUP BY U.User_ID
+        ORDER BY Total_Emissions DESC
+        LIMIT 5
+    ");
 
+    $results = $stmt->execute();
+
+    echo "<div class='admin-leaderboard-container'>";
+    echo "<button type='button' class='admin-leaderboard-toggle' onclick='toggleAdminLeaderboard()' aria-expanded='true' id='adminLeaderboardToggle'>";
+    echo "<span>Top Emitting Users</span>";
+    echo "<span id='adminLeaderboardIcon'>▲</span>";
+    echo "</button>";
+
+    echo "<div id='adminLeaderboardContent'>";
+    echo "<p class='admin-leaderboard-intro'>This leaderboard helps admins identify users with the highest recorded emissions and review where support or recommendations may be most useful.</p>";
+    echo "<div class='admin-leaderboard-list'>";
+
+    $rank = 1;
+    while ($row = $results->fetchArray(SQLITE3_ASSOC)) {
+        $total = $row['Total_Emissions'] ?? 0;
+        $household = $row['Num_Of_Household_Members'] ?? "N/A";
+
+        echo "<div class='admin-leaderboard-row'>";
+        echo "<div class='leaderboard-rank'>#" . $rank . "</div>";
+        echo "<div class='leaderboard-user'>";
+        echo "<strong>" . htmlspecialchars($row['Username']) . "</strong>";
+        echo "<span>" . htmlspecialchars($row['Email']) . "</span>";
+        echo "</div>";
+        echo "<div class='leaderboard-household'>";
+        echo "<span>Household</span>";
+        echo "<strong>" . htmlspecialchars($household) . "</strong>";
+        echo "</div>";
+        echo "<div class='leaderboard-total'>";
+        echo "<span>Total Emissions</span>";
+        echo "<strong>" . round($total, 2) . " kgCO₂e</strong>";
+        echo "</div>";
+        echo "</div>";
+
+        $rank++;
+    }
+
+    echo "</div>";
+    echo "</div>";
+    echo "</div>";
+}
 ?>

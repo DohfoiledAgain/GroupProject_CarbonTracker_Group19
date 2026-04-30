@@ -14,11 +14,13 @@
         <h1>Admin dashboard</h1>
         <br><br>
     </div>
-
-
+    
+    <!-- admin dashboard -->
     <div class="admin-container">
 
         <?php DisplayAdminAnalytics(); ?>
+
+        <?php DisplayAdminLeaderboard(); ?>
 
         <p class="activity-month-header">All Users</p>
         <?php DisplayAllUsers(); ?>

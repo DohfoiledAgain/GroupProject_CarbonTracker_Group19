@@ -1033,3 +1033,110 @@ input[type="submit"]:hover,
         width: 100%;
     }
 }
+
+/*----Leaderboard Styling----*/
+.admin-leaderboard-container {
+    border-radius: 15px;
+    background-color: white;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.05), 0 6px 20px 0 rgba(0, 0, 0, 0.05);
+    padding: 10px 25px 30px 25px;
+    box-sizing: border-box;
+    width: 100%;
+    text-align: left;
+    margin-bottom: 35px;
+}
+
+.admin-leaderboard-toggle {
+    width: 100%;
+    border: none;
+    background-color: transparent;
+    color: black;
+    font-family: 'Glacial Indifference Bold';
+    font-size: 30px;
+    text-align: left;
+    cursor: pointer;
+    padding: 12px 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 12px;
+    transition: background-color 0.2s ease, padding-left 0.2s ease;
+}
+
+.admin-leaderboard-toggle:hover {
+    background-color: #f5f8f4;
+    padding-left: 14px;
+}
+
+.admin-leaderboard-toggle:focus-visible {
+    outline: 3px solid var(--lighter-theme-colour);
+    outline-offset: 3px;
+}
+
+#adminLeaderboardIcon {
+    font-size: 22px;
+    color: var(--main-theme-colour);
+}
+
+.admin-leaderboard-intro {
+    font-family: 'Glacial Indifference';
+    font-size: 18px;
+    margin: 5px 0 20px 0;
+}
+
+.admin-leaderboard-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.admin-leaderboard-row {
+    display: grid;
+    grid-template-columns: 70px 1.5fr 1fr 1fr;
+    gap: 15px;
+    align-items: center;
+    background-color: #f5f8f4;
+    border-left: 6px solid var(--lighter-theme-colour);
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.leaderboard-rank {
+    font-family: 'Glacial Indifference Bold';
+    font-size: 26px;
+    color: var(--main-theme-colour);
+}
+
+.leaderboard-user,
+.leaderboard-household,
+.leaderboard-total {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.leaderboard-user strong,
+.leaderboard-household strong,
+.leaderboard-total strong {
+    font-family: 'Glacial Indifference Bold';
+    color: var(--main-theme-colour);
+    font-size: 20px;
+}
+
+.leaderboard-user span,
+.leaderboard-household span,
+.leaderboard-total span {
+    font-family: 'Glacial Indifference';
+    font-size: 15px;
+    color: #444;
+}
+
+@media screen and (max-width: 800px) {
+    .admin-leaderboard-row {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-leaderboard-container {
+        padding: 10px 15px 25px 15px;
+    }
+}
